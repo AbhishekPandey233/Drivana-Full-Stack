@@ -6,7 +6,7 @@ export default function LoginForm() {
 			<div className="rounded-[20px] border border-violet-300/90 bg-white/80 px-5 py-5 shadow-[0_24px_60px_rgba(92,72,168,0.18)] backdrop-blur-sm sm:px-7 sm:py-5">
 				<div className="flex items-start justify-between gap-4">
                     <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">		
-						LOGIN
+						Login
 					</h1>
 					<Link
 						href="/dashboard"
