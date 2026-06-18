@@ -6,7 +6,7 @@ export default function RegisterForm() {
 			<div className="rounded-[18px] border border-violet-300/90 bg-white/72 px-5 py-5 shadow-[0_24px_60px_rgba(92,72,168,0.18)] backdrop-blur-sm sm:px-8 sm:py-6">
 				<div className="flex items-start justify-between gap-4">
                     <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">		
-                        				REGISTER
+                        				Register
 					</h1>
 					<Link
 						href="/dashboard"
