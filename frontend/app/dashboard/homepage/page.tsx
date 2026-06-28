@@ -2,8 +2,10 @@
 
 //homepage
 
-import Link from 'next/link';
 import React from 'react';
+import Header from '../../navigation/Header';
+import Footer from '../../navigation/Footer'; // Imported from your navigation folder
+
 
 // Simple types for our structured mock data
 interface CarCard {
@@ -25,36 +27,7 @@ export default function Homepage() {
 
   return (
     <div className="w-full bg-white font-sans text-gray-900 pb-16">
-      <header className="sticky top-0 z-20 border-b border-gray-100 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <Link href="/" className="text-lg font-extrabold tracking-tight text-gray-900">
-            Drivana
-          </Link>
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium">
-            <Link href="/" className="text-gray-900 font-bold transition-colors hover:text-indigo-600">
-              Home
-            </Link>
-            <Link href="/vehicles" className="text-gray-600 transition-colors hover:text-gray-900">
-              Vehicles
-            </Link>
-            <Link href="/details" className="text-gray-600 transition-colors hover:text-gray-900">
-              Details
-            </Link>
-            <Link href="/about" className="text-gray-600 transition-colors hover:text-gray-900">
-              About Us
-            </Link>
-            <Link href="/contact" className="text-gray-600 transition-colors hover:text-gray-900">
-              Contact Us
-            </Link>
-          </nav>
-          <Link
-            href="/auth/login"
-            className="inline-flex items-center self-center rounded-full bg-[#6366F1] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 lg:self-auto"
-          >
-            Login
-          </Link>
-        </div>
-      </header>
+      <Header />
       
       {/* 1. HERO SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -248,7 +221,8 @@ export default function Homepage() {
           </div>
         </div>
       </section>
-
+{/* GLOBAL SITE FOOTER COMPONENT */}
+      <Footer />
     </div>
   );
 }
