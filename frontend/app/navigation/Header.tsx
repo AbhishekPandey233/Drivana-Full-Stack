@@ -1,8 +1,21 @@
-//header
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+  const pathname = usePathname();
+
+  // Helper function to return active or inactive text styling classes
+  const getLinkClass = (path: string) => {
+    const baseClass = "text-sm font-medium transition-colors";
+    const activeClass = "text-gray-900 font-bold";
+    const inactiveClass = "text-gray-600 hover:text-gray-900";
+    
+    return `${baseClass} ${pathname === path ? activeClass : inactiveClass}`;
+  };
+
   return (
     <nav className="w-full bg-white border-b border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between font-sans">
       
@@ -20,20 +33,20 @@ export default function Header() {
       </div>
 
       {/* Middle side: Navigation Links */}
-      <div className="flex items-center space-x-8 text-sm font-medium">
-        <Link href="/" className="text-gray-900 font-bold">
+      <div className="flex items-center space-x-8">
+        <Link href="/" className={getLinkClass('/')}>
           Home
         </Link>
-        <Link href="/vehicles" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/vehicles" className={getLinkClass('/vehicles')}>
           Vehicles
         </Link>
-        <Link href="/details" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/details" className={getLinkClass('/details')}>
           Details
         </Link>
-        <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/about" className={getLinkClass('/about')}>
           About Us
         </Link>
-        <Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">
+        <Link href="/contact" className={getLinkClass('/contact')}>
           Contact Us
         </Link>
       </div>
