@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer'; // Imported from your navigation folder
+import AuthGate from '../navigation/AuthGate';
 
 
 const BRAND_LOGOS = [
@@ -41,15 +42,8 @@ const BLOG_POSTS = [
 ];
 
 export default function ContactUsPage() {
-  const [formData, setFormData] = useState({
-    carType: '',
-    placeOfRental: '',
-    placeOfReturn: '',
-    rentalDate: '',
-    returnDate: ''
-  });
-
   return (
+    <AuthGate>
     <div className="w-full bg-white font-sans text-gray-900 min-h-screen pb-16">
       <Header />
 
@@ -254,5 +248,6 @@ export default function ContactUsPage() {
 {/* GLOBAL SITE FOOTER COMPONENT */}
       <Footer />
     </div>
+    </AuthGate>
   );
 }
