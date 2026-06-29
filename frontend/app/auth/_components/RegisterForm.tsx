@@ -1,6 +1,91 @@
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+    const router = useRouter();
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const getErrorMessage = (error: unknown) => {
+        if (error instanceof Error) {
+            return error.message;
+        }
+
+        return "Something went wrong. Please try again.";
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+        setError("");
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
+            setError("All fields are required.");
+            return;
+        }
+
+        if (formData.password.length < 7) {
+            setError("Password must be at least 7 characters long.");
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        setSuccess("");
+
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fullName: formData.fullName,
+                    email: formData.email,
+                    password: formData.password
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+
+            setSuccess(`Success! Your assigned username is: ${data.username}. Redirecting to login...`);
+            
+            setTimeout(() => {
+                router.push("/auth/login");
+            }, 3000);
+
+        } catch (error: unknown) {
+            setError(getErrorMessage(error));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <section className="w-full max-w-[490px]">
             <div className="rounded-[18px] border border-violet-300/90 bg-white/72 px-5 py-5 shadow-[0_24px_60px_rgba(92,72,168,0.18)] backdrop-blur-sm sm:px-8 sm:py-6">
@@ -14,17 +99,30 @@ export default function RegisterForm() {
                     <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">        
                         Register
                     </h1>
-                    {/* Empty placeholder div to keep the alignment balanced with flexbox layout */}
                     <div className="w-10"></div>
                 </div>
 
-                <form className="mt-7 space-y-5" action="#">
+                {error && (
+                    <div className="mt-4 p-2 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md">
+                        {error}
+                    </div>
+                )}
+
+                {success && (
+                    <div className="mt-4 p-2 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded-md">
+                        {success}
+                    </div>
+                )}
+
+                <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
                     <div className="grid gap-x-4 gap-y-5 md:grid-cols-2">                                           
                         <label className="block">
                             <span className="sr-only">Full Name</span>
                             <input
                                 type="text"
                                 name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
                                 placeholder="Full Name"
                                 className="h-9 w-full rounded-sm border border-slate-400 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-violet-400"
                             />
@@ -35,6 +133,8 @@ export default function RegisterForm() {
                             <input
                                 type="email"
                                 name="email"
+                                value={formData.email}
+                                onChange={handleChange}
                                 placeholder="Email"
                                 className="h-9 w-full rounded-sm border border-slate-400 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-violet-400"
                             />
@@ -45,6 +145,8 @@ export default function RegisterForm() {
                             <input
                                 type="password"
                                 name="password"
+                                value={formData.password}
+                                onChange={handleChange}
                                 placeholder="Password"
                                 className="h-9 w-full rounded-sm border border-slate-400 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-violet-400"
                             />
@@ -55,6 +157,8 @@ export default function RegisterForm() {
                             <input
                                 type="password"
                                 name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
                                 placeholder="Confirm Password"
                                 className="h-9 w-full rounded-sm border border-slate-400 bg-white px-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-violet-400"
                             />
@@ -63,18 +167,19 @@ export default function RegisterForm() {
 
                     <div className="flex flex-col items-center gap-2 pt-1">
                         <button
-                            type="button"
-                            className="inline-flex h-9 w-40 items-center justify-center rounded-md bg-[linear-gradient(180deg,#5d28ff,#6512f1)] px-4 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(98,34,245,0.5)] transition-transform duration-200 hover:-translate-y-0.5"
+                            type="submit"
+                            disabled={loading}
+                            className="inline-flex h-9 w-40 items-center justify-center rounded-md bg-[linear-gradient(180deg,#5d28ff,#6512f1)] px-4 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(98,34,245,0.5)] transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
                         >
-                            Sign up
+                            {loading ? "Signing up..." : "Sign up"}
                         </button>
 
-                        <button
-                            type="button"
-                            className="inline-flex h-9 w-32 items-center justify-center rounded-md border border-violet-400 bg-white px-4 text-sm font-medium text-slate-500 transition-colors hover:bg-violet-50"
+                        <Link
+                            href="/auth/login"
+                            className="inline-flex h-9 w-32 items-center justify-center rounded-md border border-violet-400 bg-white px-4 text-sm font-medium text-slate-500 transition-colors hover:bg-violet-50 text-center"
                         >
                             Login
-                        </button>
+                        </Link>
 
                         <p className="text-center text-xs text-slate-700">
                             Already signed up ?{" "}
