@@ -32,7 +32,7 @@ export default function ProfilePopup({
 
   const displayName = user.fullName || user.username || "Your name";
   const displayEmail = user.email || user.username || "yourname@gmail.com";
-  const displayMobile = "Add number";
+  
 
   return (
     <>
