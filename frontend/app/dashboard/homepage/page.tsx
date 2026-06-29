@@ -5,6 +5,7 @@
 import React from 'react';
 import Header from '../../navigation/Header';
 import Footer from '../../navigation/Footer'; // Imported from your navigation folder
+import AuthGate from '../../navigation/AuthGate';
 
 
 // Simple types for our structured mock data
@@ -26,6 +27,7 @@ export default function Homepage() {
   ];
 
   return (
+    <AuthGate>
     <div className="w-full bg-white font-sans text-gray-900 pb-16">
       <Header />
       
@@ -224,5 +226,6 @@ export default function Homepage() {
 {/* GLOBAL SITE FOOTER COMPONENT */}
       <Footer />
     </div>
+    </AuthGate>
   );
 }
