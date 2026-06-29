@@ -85,11 +85,6 @@ export default function ProfilePopup({
                 <span className="text-[15px] font-medium text-slate-700">Email account</span>
                 <span className="text-[15px] text-slate-500">{displayEmail}</span>
               </div>
-
-              <div className="flex items-center justify-between py-5">
-                <span className="text-[15px] font-medium text-slate-700">Mobile number</span>
-                <span className="text-[15px] text-slate-500">{displayMobile}</span>
-              </div>
             </div>
 
             {/* Structured using an even 3-column grid to fix sibling spacing perfectly */}
