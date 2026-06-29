@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer'; // Imported from your navigation folder
+import AuthGate from '../navigation/AuthGate';
 
 export default function AboutPage() {
   // State to handle the FAQ accordion logic individually
@@ -37,6 +38,7 @@ export default function AboutPage() {
   ];
 
   return (
+    <AuthGate>
     <div className="w-full bg-white font-sans text-gray-900 pb-16">
       <Header />
 
@@ -196,6 +198,7 @@ export default function AboutPage() {
 {/* GLOBAL SITE FOOTER COMPONENT */}
       <Footer />
     </div>
+    </AuthGate>
   );
 }
 
