@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer'; // Imported from your navigation folder
+import AuthGate from '../navigation/AuthGate';
 
 
 // 1. Unified Dataset containing both the silhouettes and realistic images from your screenshot views
@@ -67,6 +68,7 @@ export default function VehiclesPage() {
     : VEHICLES_DATA.filter(car => car.type.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
+    <AuthGate>
     <div className="w-full bg-white font-sans text-gray-900 min-h-screen pb-16">
       <Header />
 
@@ -195,5 +197,6 @@ export default function VehiclesPage() {
 {/* GLOBAL SITE FOOTER COMPONENT */}
       <Footer />
     </div>
+    </AuthGate>
   );
 }
