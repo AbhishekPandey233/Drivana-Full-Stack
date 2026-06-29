@@ -1,11 +1,44 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import ProfilePopup from '../profile/ProfilePopup';
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+
+  const token = useSyncExternalStore(
+    () => () => {},
+    () => window.localStorage.getItem('token') ?? '',
+    () => ''
+  );
+
+  const user = useSyncExternalStore(
+    () => () => {},
+    () => window.localStorage.getItem('user') ?? '',
+    () => ''
+  );
+
+  const storedUser = (() => {
+    if (!user) {
+      return {};
+    }
+
+    try {
+      return JSON.parse(user) as {
+        id?: string;
+        fullName?: string;
+        email?: string;
+        username?: string;
+      };
+    } catch {
+      return {};
+    }
+  })();
 
   // Helper function to return active or inactive text styling classes
   const getLinkClass = (path: string) => {
@@ -16,7 +49,16 @@ export default function Header() {
     return `${baseClass} ${pathname === path ? activeClass : inactiveClass}`;
   };
 
+  const handleLogout = () => {
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('user');
+    setIsProfileOpen(false);
+    setIsLogoutConfirmOpen(false);
+    router.replace('/auth/login');
+  };
+
   return (
+    <>
     <nav className="w-full bg-white border-b border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between font-sans">
       
       {/* Left side: Logo */}
@@ -51,16 +93,30 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* Right side: Login Button */}
+      {/* Right side: Logout Button */}
       <div className="flex items-center">
-        <Link 
-          href="/auth/login" 
+        <button
+          type="button"
+          onClick={() => setIsProfileOpen(true)}
           className="text-sm font-bold tracking-wider text-gray-900 uppercase hover:opacity-80 transition-opacity"
         >
-          LOGIN
-        </Link>
+          {token ? 'LOGOUT' : 'LOGIN'}
+        </button>
       </div>
 
     </nav>
+
+    <ProfilePopup
+      open={isProfileOpen}
+      onClose={() => {
+        setIsProfileOpen(false);
+        setIsLogoutConfirmOpen(false);
+      }}
+      onLogoutRequest={() => setIsLogoutConfirmOpen(true)}
+      onLogoutConfirm={handleLogout}
+      logoutConfirmOpen={isLogoutConfirmOpen}
+      user={storedUser}
+    />
+    </>
   );
 }
