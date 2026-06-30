@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import authRoutes from "../routes/authRoutes";
+import userRoutes from "../routes/userRoutes";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use("/api/users", userRoutes);
 
 // Health Check Route
 app.get("/health", (_req, res) => {
@@ -37,6 +39,8 @@ const startServer = async () => {
     console.log(`Backend listening on http://localhost:${port}`);
   });
 };
+
+
 
 startServer().catch((error: unknown) => {
   console.error("Failed to start backend", error);
