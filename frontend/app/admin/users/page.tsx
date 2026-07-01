@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/auth/AuthProvider";
 
 interface User {
   _id: string; 
@@ -12,6 +14,8 @@ interface User {
 const BACKEND_URL = "http://localhost:5000/api/users"; 
 
 export default function UsersPage() {
+  const router = useRouter();
+  const auth = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -22,10 +26,46 @@ export default function UsersPage() {
     userName: "",
   });
 
-  const fetchUsers = async () => {
+  const getAuthHeaders = useCallback(() => {
+    const token = auth.token;
+
+    if (!token) {
+      return null;
+    }
+
+    return {
+      Authorization: `Bearer ${token}`
+    };
+  }, [auth.token]);
+
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(BACKEND_URL);
+      if (auth.status !== "ready") {
+        return;
+      }
+
+      const headers = getAuthHeaders();
+
+      if (!headers) {
+        // Admin pages are already wrapped by the route guard; this is the data-layer fallback.
+        router.replace("/auth/login");
+        return;
+      }
+
+      const res = await fetch(BACKEND_URL, { headers });
+
+      if (res.status === 401) {
+        router.replace("/auth/login");
+        return;
+      }
+
+      if (res.status === 403) {
+        // The backend middleware rejected a non-admin token, so send the user back to the standard dashboard.
+        router.replace("/dashboard");
+        return;
+      }
+
       if (!res.ok) throw new Error("Server error");
       const data = await res.json();
       setUsers(data);
@@ -34,14 +74,14 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [auth.status, getAuthHeaders, router]);
 
   useEffect(() => {
     const load = async () => {
       await fetchUsers();
     };
     void load();
-  }, []);
+  }, [fetchUsers]);
 
   // Opens the stylized theme-matching modal instead of native pop-ups
   const openDeleteConfirmation = (id: string, name: string) => {
@@ -61,9 +101,27 @@ export default function UsersPage() {
     if (!id) return;
 
     try {
+      const headers = getAuthHeaders();
+
+      if (!headers) {
+        router.replace("/auth/login");
+        return;
+      }
+
       const res = await fetch(`${BACKEND_URL}/${id}`, {
         method: "DELETE",
+        headers
       });
+
+      if (res.status === 401) {
+        router.replace("/auth/login");
+        return;
+      }
+
+      if (res.status === 403) {
+        router.replace("/dashboard");
+        return;
+      }
 
       if (res.ok) {
         setUsers(users.filter(user => user._id !== id));
@@ -135,8 +193,11 @@ export default function UsersPage() {
                         <button className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-2 py-1">
                           View
                         </button>
-                        <button className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg">
-                          Edit
+                        <button 
+                           onClick={() => router.push(`/admin/users/edit?id=${user._id}`)}
+                               className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                                  >
+                                 Edit
                         </button>
                         <button 
                           onClick={() => openDeleteConfirmation(user._id, user.fullName)}
