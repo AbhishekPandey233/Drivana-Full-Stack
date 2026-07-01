@@ -34,7 +34,8 @@ export const register = async (req: Request, res: Response): Promise<any> => {
       fullName,
       email,
       username,
-      password: hashedPassword
+      password: hashedPassword,
+      role: 'user'
     });
 
     return res.status(201).json({
@@ -71,12 +72,18 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     }
 
     // Sign JWT Token
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
 
     return res.status(200).json({
       message: 'Login successful',
       token,
-      user: { id: user._id, fullName: user.fullName, email: user.email, username: user.username }
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        username: user.username,
+        role: user.role
+      }
     });
   } catch (error) {
     return res.status(500).json({ message: 'Server Error', error });
