@@ -3,9 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../AuthProvider";
 
 export default function LoginForm() {
     const router = useRouter();
+    const auth = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: ""
@@ -55,12 +57,13 @@ export default function LoginForm() {
                 throw new Error(data.message || "Invalid credentials");
             }
 
-            // Storing the token & details securely in local storage
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            const role = data.user?.role ?? data.role ?? "user";
+            const authenticatedUser = { ...data.user, role };
 
-            router.push("/dashboard");
-            router.refresh();
+            auth.login({ token: data.token, user: authenticatedUser });
+
+            // Admins go to the admin dashboard; standard users go to the regular dashboard.
+            router.replace(role === "admin" ? "/admin/dashboard" : "/dashboard");
         } catch (error: unknown) {
             setError(getErrorMessage(error));
         } finally {
