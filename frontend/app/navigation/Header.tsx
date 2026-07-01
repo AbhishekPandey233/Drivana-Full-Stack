@@ -1,44 +1,17 @@
 "use client";
 
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ProfilePopup from '../profile/ProfilePopup';
+import { useAuth } from '@/app/auth/AuthProvider';
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const auth = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
-
-  const token = useSyncExternalStore(
-    () => () => {},
-    () => window.localStorage.getItem('token') ?? '',
-    () => ''
-  );
-
-  const user = useSyncExternalStore(
-    () => () => {},
-    () => window.localStorage.getItem('user') ?? '',
-    () => ''
-  );
-
-  const storedUser = (() => {
-    if (!user) {
-      return {};
-    }
-
-    try {
-      return JSON.parse(user) as {
-        id?: string;
-        fullName?: string;
-        email?: string;
-        username?: string;
-      };
-    } catch {
-      return {};
-    }
-  })();
 
   // Helper function to return active or inactive text styling classes
   const getLinkClass = (path: string) => {
@@ -50,8 +23,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('token');
-    window.localStorage.removeItem('user');
+    auth.logout();
     setIsProfileOpen(false);
     setIsLogoutConfirmOpen(false);
     router.replace('/auth/login');
@@ -100,7 +72,7 @@ export default function Header() {
           onClick={() => setIsProfileOpen(true)}
           className="text-sm font-bold tracking-wider text-gray-900 uppercase hover:opacity-80 transition-opacity"
         >
-          {token ? 'LOGOUT' : 'LOGIN'}
+          {auth.isAuthenticated ? 'LOGOUT' : 'LOGIN'}
         </button>
       </div>
 
@@ -115,7 +87,7 @@ export default function Header() {
       onLogoutRequest={() => setIsLogoutConfirmOpen(true)}
       onLogoutConfirm={handleLogout}
       logoutConfirmOpen={isLogoutConfirmOpen}
-      user={storedUser}
+      user={auth.user ?? {}}
     />
     </>
   );
