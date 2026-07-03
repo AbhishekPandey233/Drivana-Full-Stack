@@ -14,7 +14,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Dashboard", path: "/admin/dashboard", icon: "📊" },
     { name: "Profile", path: "/admin/profile", icon: "👤" },
     { name: "Users", path: "/admin/users", icon: "👥" },
-    { name: "Create User", path: "/admin/id/edit", icon: "➕" }, // 👈 Fixed this line to route to your specific page file
+    { name: "Create User", path: "/admin/id/edit", icon: "➕" },
+    { name: "Vehicles", path: "/admin/vehicles", icon: "🚗" },
+    { name: "Create Vehicle", path: "/admin/vehicles/create", icon: "➕" },
   ];
 
   return (
@@ -44,7 +46,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Navigation Links */}
             <nav className="space-y-1.5">
               {menuItems.map((item) => {
-                const isActive = pathname === item.path;
+                const isExactActive = pathname === item.path;
+                const isVehiclesSection = item.path === "/admin/vehicles" && pathname.startsWith("/admin/vehicles");
+                const isActive = isExactActive || isVehiclesSection;
                 return (
                   <button
                     key={item.name}
