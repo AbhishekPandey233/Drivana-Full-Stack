@@ -1,15 +1,47 @@
-// File path: C:\Users\ACER\OneDrive\Desktop\drivana_full_stack\backend\src\routes\vehicleRoutes.ts
 import { Router } from "express";
-import { 
-  getVehicleById, 
-  updateVehicle, 
-  deleteVehicle 
+import multer from "multer";
+import path from "path";
+import { Request, Response, NextFunction } from "express";
+import {
+  getVehicleById,
+  updateVehicle,
+  deleteVehicle
 } from "../controllers/vehicleController";
 import Vehicle from "../models/Vehicle";
 
 const router = Router();
 
-// GET all vehicles for management overview dashboard view
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dest = path.join(__dirname, "../../public/images");
+    cb(null, dest);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const basename = path.basename(file.originalname, ext);
+    cb(null, `${Date.now()}-${basename}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed."));
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+const persistImageUrl = (req: Request, res: Response, next: NextFunction) => {
+  if (req.file) {
+    req.body.image = `/uploads/images/${req.file.filename}`;
+  }
+  next();
+};
+
 router.get("/", async (req, res) => {
   try {
     const vehicles = await Vehicle.find().sort({ createdAt: -1 });
@@ -19,10 +51,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST to create a brand new fleet asset entry
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const newVehicle = new Vehicle(req.body);
+    const vehicleData: any = { ...req.body };
+    if (req.file) {
+      vehicleData.image = `/uploads/images/${req.file.filename}`;
+    }
+    const newVehicle = new Vehicle(vehicleData);
     const savedVehicle = await newVehicle.save();
     res.status(201).json(savedVehicle);
   } catch (error: any) {
@@ -33,9 +68,16 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Dynamic routes linked directly to controller module handlers
+router.put(
+  "/:id",
+  upload.single("image"),
+  persistImageUrl,
+  async (req, res) => {
+    await updateVehicle(req, res);
+  }
+);
+
 router.get("/:id", getVehicleById);
-router.put("/:id", updateVehicle);
 router.delete("/:id", deleteVehicle);
 
 export default router;
