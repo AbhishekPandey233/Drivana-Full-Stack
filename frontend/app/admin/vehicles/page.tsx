@@ -11,6 +11,7 @@ interface Vehicle {
   plateNumber: string;
   pricePerDay: number;
   status: "available" | "rented" | "maintenance";
+  image?: string;
 }
 
 const BACKEND_URL = "http://localhost:5000/api/vehicles"; 
@@ -177,8 +178,16 @@ export default function VehiclesPage() {
                   <tr key={vehicle._id} className="group hover:bg-slate-50/50 transition-colors">
                     {/* Vehicle Details */}
                     <td className="py-4 pl-4 flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 font-bold text-slate-600 text-sm flex items-center justify-center uppercase shadow-inner shrink-0">
-                        🚗
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center">
+                        {vehicle.image ? (
+                          <img
+                            src={vehicle.image.startsWith("http") ? vehicle.image : `http://localhost:5000${vehicle.image}`}
+                            alt={vehicle.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-lg">🚗</span>
+                        )}
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="font-bold text-slate-900 text-sm truncate">{vehicle.name || "Unknown Fleet Model"}</span>
