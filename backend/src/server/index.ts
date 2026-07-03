@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
 import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
 import vehicleRoutes from "../routes/vehicleRoutes";
@@ -12,12 +13,12 @@ const app = express();
 const port = Number(process.env.PORT) || 5000;
 const mongoUri = process.env.MONGODB_URI;
 
-// Middleware
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true
 }));
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "../../public")));
 app.use("/api/users", userRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 
