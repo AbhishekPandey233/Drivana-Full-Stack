@@ -19,6 +19,7 @@ export interface IVehicle extends Document {
     hasCruiseControl: boolean;
     hasAirConditioner: boolean;
   };
+  image?: string;
 }
 
 const VehicleSchema = new Schema<IVehicle>(
@@ -35,13 +36,14 @@ const VehicleSchema = new Schema<IVehicle>(
       seats: { type: Number, default: 5 },
       distance: { type: Number, default: 500 },
     },
-    equipment: {
-      hasABS: { type: Boolean, default: false },
-      hasAirBags: { type: Boolean, default: false },
-      hasCruiseControl: { type: Boolean, default: false },
-      hasAirConditioner: { type: Boolean, default: false },
-    },
+  equipment: {
+    hasABS: { type: Boolean, default: false },
+    hasAirBags: { type: Boolean, default: false },
+    hasCruiseControl: { type: Boolean, default: false },
+    hasAirConditioner: { type: Boolean, default: false },
   },
+  image: { type: String, default: "" },
+},
   { timestamps: true }
 );
 
