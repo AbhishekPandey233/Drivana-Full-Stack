@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -29,6 +28,20 @@ export default function CreateVehiclePage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const imagePreview = React.useMemo(() => {
+    if (!imageFile) return null;
+    return URL.createObjectURL(imageFile);
+  }, [imageFile]);
+
+  React.useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -40,6 +53,11 @@ export default function CreateVehiclePage() {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setImageFile(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -49,34 +67,35 @@ export default function CreateVehiclePage() {
     const token = window.localStorage.getItem("token");
 
     try {
-      const payloadBody = {
-        name: formData.name,
-        type: formData.type,
-        plateNumber: formData.plateNumber,
-        pricePerDay: Number(formData.pricePerDay),
-        status: formData.status,
-        specs: {
-          gearBox: formData.gearBox,
-          fuel: formData.fuel,
-          doors: Number(formData.doors),
-          seats: Number(formData.seats),
-          distance: Number(formData.distance),
-        },
-        equipment: {
-          hasABS: formData.hasABS,
-          hasAirBags: formData.hasAirBags,
-          hasCruiseControl: formData.hasCruiseControl,
-          hasAirConditioner: formData.hasAirConditioner,
-        },
-      };
+      const payload = new FormData();
+      payload.append("name", formData.name);
+      payload.append("type", formData.type);
+      payload.append("plateNumber", formData.plateNumber);
+      payload.append("pricePerDay", formData.pricePerDay);
+      payload.append("status", formData.status);
+      payload.append("specs", JSON.stringify({
+        gearBox: formData.gearBox,
+        fuel: formData.fuel,
+        doors: formData.doors,
+        seats: formData.seats,
+        distance: formData.distance,
+      }));
+      payload.append("equipment", JSON.stringify({
+        hasABS: formData.hasABS,
+        hasAirBags: formData.hasAirBags,
+        hasCruiseControl: formData.hasCruiseControl,
+        hasAirConditioner: formData.hasAirConditioner,
+      }));
+      if (imageFile) {
+        payload.append("image", imageFile);
+      }
 
       const res = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
-        body: JSON.stringify(payloadBody),
+        body: payload,
       });
 
       const data = await res.json();
@@ -224,6 +243,29 @@ export default function CreateVehiclePage() {
                   <span className="capitalize text-xs font-bold uppercase tracking-wider">{feature.replace("has", "Include ")}</span>
                 </label>
               ))}
+            </div>
+
+            <h3 className="text-sm font-bold text-slate-800 border-b pb-2 pt-4">Vehicle Image</h3>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-start gap-4">
+                <div className="w-24 h-24 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-slate-400 font-medium text-center px-2">No image selected</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Upload Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full h-11 px-4 text-sm font-medium rounded-xl border border-slate-200 text-slate-800 bg-white focus:outline-none focus:border-[#6366F1] focus:ring-2 focus:ring-indigo-100 transition-all"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1.5 font-medium">Supports JPG, PNG, WebP up to 5MB.</p>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
