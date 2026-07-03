@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
+import vehicleRoutes from "../routes/vehicleRoutes";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use("/api/users", userRoutes);
+app.use("/api/vehicles", vehicleRoutes);
 
 // Health Check Route
 app.get("/health", (_req, res) => {
