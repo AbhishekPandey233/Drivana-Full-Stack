@@ -130,7 +130,7 @@ export default function VehiclesPage() {
                       : 'bg-gray-50/60 text-gray-500 border-gray-100 hover:bg-gray-100/80 hover:text-gray-900'
                   }`}
                 >
-                  <span className="opacity-60 text-[10px]">🚗</span>
+                  <span className="opacity-60 text-[10px]"></span>
                   {category}
                 </button>
               );
@@ -179,12 +179,12 @@ export default function VehiclesPage() {
                   </div>
 
                   {/* Action layout CTAs */}
-                  <Link
-                    href="/details"
-                    className="w-full bg-[#6366F1] text-white text-center text-xs font-bold py-3 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm block"
-                  >
-                    View Details
-                  </Link>
+                   <Link
+                     href={`/vehicles/${car._id}`}
+                     className="w-full bg-[#6366F1] text-white text-center text-xs font-bold py-3 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm block"
+                   >
+                     View Details
+                   </Link>
                 </div>
               ))}
             </div>
