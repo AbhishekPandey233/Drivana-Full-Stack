@@ -39,6 +39,7 @@ interface Vehicle {
     hasAirConditioner: boolean;
   };
   image?: string;
+  status?: string;
 }
 
 export default function VehiclesPage() {
@@ -155,10 +156,23 @@ export default function VehiclesPage() {
 
                   {/* Identity details info block */}
                   <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 tracking-tight">{car.name}</h3>
-                      <p className="text-[11px] text-gray-400 font-medium">{car.type}</p>
-                    </div>
+                     <div>
+                       <div className="flex items-center gap-2">
+                         <h3 className="text-sm font-bold text-gray-900 tracking-tight">{car.name}</h3>
+                         {car.status && (
+                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                             car.status === 'available'
+                               ? 'bg-green-100 text-green-700'
+                               : car.status === 'rented'
+                               ? 'bg-red-100 text-red-700'
+                               : 'bg-amber-100 text-amber-700'
+                           }`}>
+                             {car.status === 'available' ? 'Available' : car.status === 'rented' ? 'Rented' : 'Maintenance'}
+                           </span>
+                         )}
+                       </div>
+                       <p className="text-[11px] text-gray-400 font-medium">{car.type}</p>
+                     </div>
                     <div className="text-right">
                       <span className="text-sm font-bold text-[#6366F1]">${car.pricePerDay}</span>
                       <p className="text-[9px] text-gray-400 font-medium">per day</p>
