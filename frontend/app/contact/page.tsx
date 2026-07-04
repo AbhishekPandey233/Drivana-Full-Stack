@@ -136,23 +136,16 @@ export default function ContactUsPage() {
             </button>
           </div>
 
-          {/* Banner Showcase Image Column */}
-          <div className="lg:col-span-8 bg-gray-100/80 rounded-[28px] p-4 flex items-center justify-center relative overflow-hidden min-h-[340px]">
-            <div className="relative w-11/12 h-5/6">
-              {/* Using your available placeholder branding fallback logic style */}
-              <Image 
-                src="/mercedeslogo.png" 
-                alt="Featured Luxury Sedan" 
-                fill 
-                sizes="(max-width: 1024px) 100vw, 66vw"
-                className="object-contain opacity-25"
-              />
-              {/* Front center realistic layout vehicle mock illustration element */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-[120px] filter drop-shadow-md leading-none select-none">🚗</span>
-                <span className="text-xs font-bold tracking-widest text-gray-400 bg-white/80 px-4 py-1.5 rounded-full border border-gray-100 shadow-sm mt-4">C-Class Showcase</span>
-              </div>
-            </div>
+          {/* Banner Showcase Image Column - Updated with Rolls Royce graphic element */}
+          <div className="lg:col-span-8 bg-gray-100/80 rounded-[28px] overflow-hidden relative min-h-[340px] shadow-sm border border-gray-100">
+            <Image 
+              src="/rollsroyce.jpg" 
+              alt="Premium Car Showcase" 
+              fill 
+              priority
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              className="object-cover"
+            />
           </div>
 
         </div>
