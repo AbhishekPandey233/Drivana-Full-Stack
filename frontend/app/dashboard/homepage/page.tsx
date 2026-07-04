@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '../../navigation/Header';
 import Footer from '../../navigation/Footer';
 import AuthGate from '../../navigation/AuthGate';
@@ -30,17 +31,6 @@ interface Vehicle {
   status: string;
 }
 
-interface CarCard {
-  id: string;
-  brand: string;
-  model: string;
-  price: number;
-  gearBox: string;
-  fuel: string;
-  seats: number;
-  image?: string;
-}
-
 export default function Homepage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,16 +56,29 @@ export default function Homepage() {
     void fetchVehicles();
   }, []);
 
-  const carCards: CarCard[] = vehicles.map((v) => ({
-    id: v._id,
-    brand: v.name,
-    model: v.type,
-    price: v.pricePerDay,
-    gearBox: v.specs.gearBox || 'Automatic',
-    fuel: v.specs.fuel || 'Petrol',
-    seats: v.specs.seats || 5,
-    image: v.image,
-  }));
+  // Helper method to match image rendering from VehiclesPage component layout
+  const renderImage = (car: Vehicle) => {
+    if (car.image) {
+      const src = car.image.startsWith('http') ? car.image : `http://localhost:5000${car.image}`;
+      return (
+        <div className="relative w-full h-full p-2">
+          <img
+            src={src}
+            alt={car.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-44 h-10 bg-gray-200 rounded-full relative opacity-70 mt-4">
+        <div className="absolute top-[-14px] left-8 w-22 h-14 bg-gray-200 rounded-t-full" />
+        <div className="absolute bottom-[-5px] left-6 w-7 h-7 bg-gray-300 rounded-full border-4 border-white" />
+        <div className="absolute bottom-[-5px] right-6 w-7 h-7 bg-gray-300 rounded-full border-4 border-white" />
+      </div>
+    );
+  };
 
   return (
     <AuthGate>
@@ -93,9 +96,13 @@ export default function Homepage() {
               <p className="text-indigo-100 text-lg font-light max-w-md">
                 Premium car rentals tailored exactly to your journey and your lifestyle choice.
               </p>
-              <button className="bg-[#F59E0B] hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition shadow-md">
+              {/* Changed from <button> to <Link> for navigation */}
+              <Link 
+                href="/vehicles" 
+                className="bg-[#F59E0B] hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition shadow-md inline-block text-center text-sm md:text-base"
+              >
                 View all cars
-              </button>
+              </Link>
             </div>
 
             {/* Hero Right: Booking Form Container Card */}
@@ -149,9 +156,16 @@ export default function Homepage() {
 
         {/* 3. ABOUT CONTENT / FEATURE HIGHLIGHTS */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left Aspect: Static Placeholder for Side Car Image */}
-          <div className="bg-gray-100 rounded-3xl aspect-[4/3] w-full flex items-center justify-center border border-gray-200 shadow-sm overflow-hidden text-gray-400">
-            <span className="text-sm italic">Static Car Image Placeholder</span>
+          {/* Left Aspect: Rolls Royce Static Side Car Image */}
+          <div className="bg-gray-50 rounded-3xl aspect-[4/3] w-full flex items-center justify-center border border-gray-100 shadow-sm overflow-hidden relative">
+            <Image 
+              src="/rollsroyce.jpg" 
+              alt="Premium Car Showcase"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-w-768px) 100vw, 50vw"
+            />
           </div>
 
           {/* Right Aspect: Detailed Stepper List */}
@@ -179,9 +193,9 @@ export default function Homepage() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex justify-between items-end mb-8">
             <h2 className="text-3xl font-extrabold tracking-tight">Choose the car that<br />suits you</h2>
-            <button className="text-sm font-semibold text-gray-600 hover:text-indigo-600 flex items-center gap-1">
+            <Link href="/vehicles" className="text-sm font-semibold text-gray-600 hover:text-indigo-600 flex items-center gap-1">
               View All <span>→</span>
-            </button>
+            </Link>
           </div>
 
           {loading ? (
@@ -192,48 +206,61 @@ export default function Homepage() {
             <div className="text-center py-12 text-sm font-medium text-red-500">
               {error}
             </div>
-          ) : carCards.length === 0 ? (
+          ) : vehicles.length === 0 ? (
             <div className="text-center py-12 text-sm font-medium text-slate-400">
               No fleet vehicles available right now.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {carCards.map((car) => (
-                <div key={car.id} className="border border-gray-100 bg-gray-50/50 rounded-2xl p-5 hover:shadow-md transition flex flex-col justify-between">
-                  {/* Car Image Container */}
-                  <div className="w-full h-32 bg-gray-200/60 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
-                    {car.image ? (
-                      <img
-                        src={car.image.startsWith('http') ? car.image : `http://localhost:5000${car.image}`}
-                        alt={car.brand}
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-xs text-gray-400 italic">Car Image Outline</span>
-                    )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {vehicles.map((car) => (
+                <div key={car._id} className="bg-white border border-gray-100 rounded-3xl p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+                  {/* Dynamic Aspect Media view window */}
+                  <div className="w-full aspect-[16/10] bg-gray-50 rounded-2xl flex items-center justify-center overflow-hidden mb-5 relative">
+                    {renderImage(car)}
                   </div>
+                  
                   <div>
-                    <div className="flex justify-between items-start">
+                    {/* Brand details and rates container */}
+                    <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h4 className="font-bold text-lg text-gray-900">{car.brand}</h4>
-                        <span className="text-xs text-gray-400 uppercase tracking-wider">{car.model}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-sm font-bold text-gray-900 tracking-tight">{car.name}</h3>
+                          {car.status && (
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                              car.status === 'available'
+                                ? 'bg-green-100 text-green-700'
+                                : car.status === 'rented'
+                                ? 'bg-red-100 text-red-700'
+                                : 'bg-amber-100 text-amber-700'
+                            }`}>
+                              {car.status === 'available' ? 'Available' : car.status === 'rented' ? 'Rented' : 'Maintenance'}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-gray-400 font-medium">{car.type}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-indigo-600 font-extrabold text-lg">${car.price}</span>
-                        <p className="text-[10px] text-gray-400">/ per day</p>
+                        <span className="text-sm font-bold text-[#6366F1]">${car.pricePerDay}</span>
+                        <p className="text-[9px] text-gray-400 font-medium">per day</p>
                       </div>
                     </div>
 
-                    {/* Micro Icons specs row */}
-                    <div className="grid grid-cols-3 gap-1 my-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
-                      <span className="flex items-center gap-1">⚙️ {car.gearBox}</span>
-                      <span className="flex items-center gap-1">⛽ {car.fuel}</span>
-                      <span className="flex items-center gap-1">👥 {car.seats} Seats</span>
+                    {/* Styled Utilities specification strip */}
+                    <div className="grid grid-cols-3 gap-1 py-3 border-t border-gray-50 text-[10px] font-semibold text-gray-500 mb-4">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-400">⦚</span> {car.specs?.gearBox || 'Automatic'}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-400">⛽</span> {car.specs?.fuel || 'Petrol'}
+                      </div>
+                      <div className="flex items-center gap-1 justify-end">
+                        <span className="text-gray-400">❄</span> Air Conditioner
+                      </div>
                     </div>
 
                     <Link
-                      href={`/vehicles/${car.id}`}
-                      className="w-full bg-[#6366F1] hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-xl transition block text-center"
+                      href={`/vehicles/${car._id}`}
+                      className="w-full bg-[#6366F1] text-white text-center text-xs font-bold py-3 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm block"
                     >
                       View Details
                     </Link>
