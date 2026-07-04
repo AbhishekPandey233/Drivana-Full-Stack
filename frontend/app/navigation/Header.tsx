@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ProfilePopup from '../profile/ProfilePopup';
 import { useAuth } from '@/app/auth/AuthProvider';
+
+const BACKEND_URL = "http://localhost:5000/api/vehicles";
 
 export default function Header() {
   const pathname = usePathname();
@@ -12,14 +14,54 @@ export default function Header() {
   const auth = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const [firstVehicleId, setFirstVehicleId] = useState<string | null>(null);
 
-  // Helper function to return active or inactive text styling classes
-  const getLinkClass = (path: string) => {
+  useEffect(() => {
+    const fetchFirstVehicle = async () => {
+      try {
+        const res = await fetch(BACKEND_URL);
+        if (res.ok) {
+          const vehicles = await res.json();
+          if (vehicles.length > 0) {
+            setFirstVehicleId(vehicles[0]._id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to prefetch first vehicle for nav", err);
+      }
+    };
+
+    void fetchFirstVehicle();
+  }, []);
+
+  const isDetailsActive = pathname.startsWith('/vehicles/');
+
+  const getLinkClass = (path: string, active?: boolean) => {
     const baseClass = "text-sm font-medium transition-colors";
     const activeClass = "text-gray-900 font-bold";
     const inactiveClass = "text-gray-600 hover:text-gray-900";
     
-    return `${baseClass} ${pathname === path ? activeClass : inactiveClass}`;
+    const isActive = active ?? pathname === path;
+    return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
+  };
+
+  const handleDetailsClick = async (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (firstVehicleId) {
+      router.push(`/vehicles/${firstVehicleId}`);
+    } else {
+      try {
+        const res = await fetch(BACKEND_URL);
+        if (res.ok) {
+          const vehicles = await res.json();
+          if (vehicles.length > 0) {
+            router.push(`/vehicles/${vehicles[0]._id}`);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch vehicle for details redirect", err);
+      }
+    }
   };
 
   const handleLogout = () => {
@@ -51,10 +93,14 @@ export default function Header() {
         <Link href="/" className={getLinkClass('/')}>
           Home
         </Link>
-        <Link href="/vehicles" className={getLinkClass('/vehicles')}>
+        <Link href="/vehicles" className={getLinkClass('/vehicles', !isDetailsActive)}>
           Vehicles
         </Link>
-        <Link href="/details" className={getLinkClass('/details')}>
+        <Link 
+          href={firstVehicleId ? `/vehicles/${firstVehicleId}` : '#'} 
+          className={getLinkClass('', isDetailsActive)} 
+          onClick={handleDetailsClick}
+        >
           Details
         </Link>
         <Link href="/about" className={getLinkClass('/about')}>
