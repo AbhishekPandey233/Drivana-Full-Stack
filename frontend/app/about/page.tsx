@@ -1,7 +1,7 @@
-
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer'; // Imported from your navigation folder
 import AuthGate from '../navigation/AuthGate';
@@ -35,6 +35,12 @@ export default function AboutPage() {
       q: "Does Car Rental offer coverage products for purchase with my rental?",
       a: "Yes, we provide several tiers of integrated damage protections, comprehensive packages, and personal item protection selections inside your profile checkout hub."
     }
+  ];
+
+  const showcaseCars = [
+    { id: 1, name: "Rolls-Royce", src: "/rollsroyce.jpg" },
+    { id: 2, name: "Mercedes Sedan", src: "/sudanMercedes.jpeg" },
+    { id: 3, name: "SUV Jeep", src: "/SUVJEEP.jpeg" }
   ];
 
   return (
@@ -132,37 +138,37 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Right side static luxury placeholder car card container image snippet matching image_237ec6.png layout */}
-        <div className="bg-gray-100 rounded-3xl aspect-[4/3] w-full flex flex-col items-center justify-center border border-gray-200 text-gray-400 order-1 md:order-2 shadow-sm overflow-hidden">
-          <span className="text-sm italic">Static Mercedes Image Placeholder</span>
+        {/* Right side luxury showcase graphic container displaying aboutpageimage.jpeg */}
+        <div className="bg-gray-100 rounded-3xl aspect-[4/3] w-full flex flex-col items-center justify-center border border-gray-200 order-1 md:order-2 shadow-sm overflow-hidden relative">
+          <Image 
+            src="/aboutpageimage.jpeg"
+            alt="Drivana Fleet Showcase"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+          />
         </div>
       </section>
 
-      {/* 5. REVIEWS FROM OUR CUSTOMERS */}
+      {/* 5. OUR CARS SHOWCASE GRID SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50/40 rounded-3xl">
-        <h2 className="text-2xl font-extrabold text-center mb-12 tracking-tight">Reviews from our customers</h2>
+        <h2 className="text-2xl font-extrabold text-center mb-12 tracking-tight">Our Cars</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {[
-            { name: "Emanuel Boyle", company: "Kozey LLC" },
-            { name: "River Graves", company: "Glover - O'Connell" },
-            { name: "Ryder Malone", company: "Haag LLC" }
-          ].map((user, idx) => (
-            <div key={idx} className="bg-white rounded-2xl border border-gray-100 flex flex-col justify-between overflow-hidden shadow-sm pt-6">
-              {/* Quote details */}
-              <div className="px-6 pb-6 text-center space-y-4">
-                <span className="text-3xl font-serif text-indigo-500 block">“</span>
-                <p className="text-xs text-gray-400 leading-relaxed italic">
-                  Excellent rental service platform. The car was clean, brand new, and dropped off right on time. Highly recommended!
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {showcaseCars.map((car) => (
+            <div key={car.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col transition-transform duration-300 hover:scale-[1.01]">
+              <div className="relative aspect-[16/10] w-full bg-gray-100">
+                <Image 
+                  src={car.src}
+                  alt={car.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover"
+                />
               </div>
-              
-              {/* Bottom solid name bar snippet matching image_237ec6.png color fill */}
-              <div className="bg-[#6366F1] text-white p-4 text-center flex flex-col items-center justify-center relative">
-                {/* Tiny absolute layout pseudo avatar marker circle */}
-                <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white absolute -top-4 shadow-sm" />
-                <span className="text-xs font-bold pt-2 block">{user.name}</span>
-                <span className="text-[10px] text-indigo-200 mt-0.5">{user.company}</span>
+              <div className="p-5 text-center border-t border-gray-50 bg-white">
+                <h3 className="font-bold text-sm text-gray-800 tracking-wide">{car.name}</h3>
               </div>
             </div>
           ))}
@@ -195,10 +201,10 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
-{/* GLOBAL SITE FOOTER COMPONENT */}
+
+      {/* GLOBAL SITE FOOTER COMPONENT */}
       <Footer />
     </div>
     </AuthGate>
   );
 }
-
