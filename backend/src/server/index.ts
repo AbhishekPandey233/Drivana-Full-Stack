@@ -6,6 +6,7 @@ import path from "path";
 import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
 import vehicleRoutes from "../routes/vehicleRoutes";
+import rentingRoutes from "../routes/rentingRoutes"; // Imported here
 
 dotenv.config();
 
@@ -19,8 +20,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../../public")));
+
 app.use("/api/users", userRoutes);
 app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/rentings", rentingRoutes); // Mounted here
 
 // Health Check Route
 app.get("/health", (_req, res) => {
@@ -42,8 +45,6 @@ const startServer = async () => {
     console.log(`Backend listening on http://localhost:${port}`);
   });
 };
-
-
 
 startServer().catch((error: unknown) => {
   console.error("Failed to start backend", error);
