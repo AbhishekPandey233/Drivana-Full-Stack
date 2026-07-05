@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AuthGate from "../../navigation/AuthGate";
 import Header from '../../navigation/Header';
 import Footer from '../../navigation/Footer';
@@ -45,6 +45,7 @@ interface OtherCar {
 
 export default function VehicleDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const vehicleId = params?.id as string;
 
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
@@ -96,12 +97,19 @@ export default function VehicleDetailsPage() {
         console.error("Error fetching vehicle details:", err);
         setError("Failed to load vehicle details. Please try again later.");
       } finally {
-        setLoading(false);
+        loading && setLoading(false);
       }
     };
 
     void fetchData();
   }, [vehicleId]);
+
+  // Handle Redirection to Renting Page
+  const handleRentNow = () => {
+    if (vehicleId) {
+      router.push(`/renting?vehicleId=${vehicleId}`);
+    }
+  };
 
   const renderImage = (car: Vehicle | OtherCar) => {
     if (car.image) {
@@ -159,13 +167,12 @@ export default function VehicleDetailsPage() {
           <Header />
 
           <main className="max-w-7xl mx-auto px-4 py-10 space-y-16">
-            {/* Upper Vehicle info display */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm">
               <div className="lg:col-span-6 space-y-6">
                 <div>
                   <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">{loading ? 'Loading...' : vehicle?.name}</h1>
                   <div className="mt-2 text-2xl font-bold text-[#6366F1]">
-                    {loading ? '' : `$${vehicle?.pricePerDay}`} <span className="text-xs text-slate-400 font-medium">/ day</span>
+                    {!loading && vehicle ? `$${vehicle.pricePerDay}` : ''} <span className="text-xs text-slate-400 font-medium">/ day</span>
                   </div>
                 </div>
 
@@ -178,7 +185,6 @@ export default function VehicleDetailsPage() {
                 </div>
               </div>
 
-              {/* Technical specification right column */}
               <div className="lg:col-span-6 space-y-8 lg:pt-4">
                 <div>
                   <h2 className="text-lg font-bold tracking-tight text-slate-900 mb-4">Technical Specification</h2>
@@ -189,7 +195,7 @@ export default function VehicleDetailsPage() {
                       { label: "Doors", value: vehicle?.specs.doors ?? 4, icon: "🚪" },
                       { label: "Air Conditioner", value: vehicle?.equipment.hasAirConditioner ? "Yes" : "No", icon: "❄️" },
                       { label: "Seats", value: vehicle?.specs.seats ?? 5, icon: "👥" },
-                      { label: "Distance", value: `${vehicle?.specs.distance ?? 500} km`, icon: "🛣️" },
+                      { label: "Distance", value: vehicle ? `${vehicle.specs.distance} km` : '500 km', icon: "🛣️" },
                     ].map((spec, i) => (
                       <div key={i} className="bg-white border border-slate-100 p-4 rounded-xl shadow-sm space-y-1">
                         <span className="text-lg block mb-1">{spec.icon}</span>
@@ -200,7 +206,10 @@ export default function VehicleDetailsPage() {
                   </div>
                 </div>
 
-                <button className="w-full sm:w-auto px-10 h-12 rounded-full bg-[#6366F1] font-semibold text-xs text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider">
+                <button 
+                  onClick={handleRentNow}
+                  className="w-full sm:w-auto px-10 h-12 rounded-full bg-[#6366F1] font-semibold text-xs text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider"
+                >
                   Rent Now
                 </button>
 
@@ -222,7 +231,6 @@ export default function VehicleDetailsPage() {
 
             <hr className="border-slate-200" />
 
-            {/* Recommendations / Other cars collection list */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-black tracking-tight text-slate-900">Other cars</h2>
@@ -274,7 +282,6 @@ export default function VehicleDetailsPage() {
                 </div>
               )}
             </div>
-
           </main>
         </div>
 
