@@ -99,7 +99,7 @@ export default function DashboardPage() {
           <span className="text-4xl font-black text-slate-900 block mt-2 tracking-tight">
             {loading ? "—" : stats.totalUsers}
           </span>
-          <span className="text-xs font-medium text-slate-400 block mt-2">Non-admin registered users</span>
+          <span className="text-xs font-medium text-slate-400 block mt-2">All registered users</span>
         </div>
 
         <div className="bg-gradient-to-br from-slate-50 to-purple-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
