@@ -195,3 +195,45 @@ export const cancelRenting = async (req: AuthenticatedRequest, res: Response): P
     return res.status(500).json({ error: "Server error while cancelling rental." });
   }
 };
+
+// @desc    Get all rentals (admin only)
+// @route   GET /api/rentings/admin/all
+export const getAllRentings = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const allRentings = await Renting.find()
+      .populate("user", "fullName email")
+      .populate("vehicle", "name type pricePerDay")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(allRentings);
+  } catch (error) {
+    console.error("Error getting all rentals:", error);
+    return res.status(500).json({ error: "Server error while retrieving all rentals." });
+  }
+};
+
+// @desc    Admin cancel a rental
+// @route   DELETE /api/rentings/admin/:id/cancel
+export const adminCancelRenting = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const { id } = req.params;
+
+    const renting = await Renting.findById(id);
+    if (!renting) {
+      return res.status(404).json({ error: "Rental record not found." });
+    }
+
+    const vehicle = await Vehicle.findById(renting.vehicle);
+    if (vehicle) {
+      vehicle.status = "available";
+      await vehicle.save();
+    }
+
+    await Renting.findByIdAndDelete(id);
+
+    return res.status(200).json({ success: true, message: "Rental cancelled successfully." });
+  } catch (error) {
+    console.error("Error cancelling rental:", error);
+    return res.status(500).json({ error: "Server error while cancelling rental." });
+  }
+};
