@@ -96,9 +96,9 @@ export default function Header() {
         <Link href="/vehicles" className={getLinkClass('/vehicles', !isDetailsActive)}>
           Vehicles
         </Link>
-        <Link 
-          href={firstVehicleId ? `/vehicles/${firstVehicleId}` : '#'} 
-          className={getLinkClass('', isDetailsActive)} 
+        <Link
+          href={firstVehicleId ? `/vehicles/${firstVehicleId}` : '#'}
+          className={getLinkClass('', isDetailsActive)}
           onClick={handleDetailsClick}
         >
           Details
@@ -108,6 +108,9 @@ export default function Header() {
         </Link>
         <Link href="/contact" className={getLinkClass('/contact')}>
           Contact Us
+        </Link>
+        <Link href="/viewRents" className={getLinkClass('/viewRents')}>
+          View Rents
         </Link>
       </div>
 
