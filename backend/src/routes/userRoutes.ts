@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { getAllUsers, getUserById, deleteUser, createUser, updateUser } from "../controllers/userController";
+import { getAllUsers, getUserById, deleteUser, createUser, updateUser, getDashboardStats } from "../controllers/userController";
 import { requireAdmin } from "../middleware/adminMiddleware";
 
 const router = Router();
 
 // Admin-only backend routes
 router.get("/", requireAdmin, getAllUsers);
+router.get("/stats", requireAdmin, getDashboardStats);
 router.get("/:id", requireAdmin, getUserById);
-router.post("/", requireAdmin, createUser); 
+router.post("/", requireAdmin, createUser);
 router.put("/:id", requireAdmin, updateUser);
 router.delete("/:id", requireAdmin, deleteUser);
 
