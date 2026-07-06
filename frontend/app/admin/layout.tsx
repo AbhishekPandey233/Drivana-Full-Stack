@@ -17,6 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Create User", path: "/admin/id/edit", icon: "➕" },
     { name: "Vehicles", path: "/admin/vehicles", icon: "🚗" },
     { name: "Create Vehicle", path: "/admin/vehicles/create", icon: "➕" },
+    { name: "View Rentings", path: "/admin/viewRentings", icon: "📋" },
   ];
 
   return (
