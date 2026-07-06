@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { User } from "../models/User"; 
+import { Types } from "mongoose";
+import { User } from "../models/User";
+import Renting from "../models/Renting";
 import bcrypt from "bcryptjs";
 
 const toSafeUser = (user: {
@@ -35,7 +37,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id).select("-password");
+    const userId = Array.isArray(id) ? id[0] : id;
+
+    if (!userId || !Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user id" });
+    }
+
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -158,5 +166,30 @@ export const deleteUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("❌ Catch Block Error deleting user:", error);
     return res.status(500).json({ error: "Failed to delete user" });
+  }
+};
+
+// Get dashboard stats
+export const getDashboardStats = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userCount = await User.countDocuments({ role: "user" });
+
+    const rentalsPipeline = [
+      { $group: { _id: null, totalEarnings: { $sum: "$totalPrice" }, totalRentals: { $sum: 1 } } }
+    ];
+
+    const stats = await Renting.aggregate(rentalsPipeline);
+
+    const totalEarnings = stats[0]?.totalEarnings || 0;
+    const totalRentals = stats[0]?.totalRentals || 0;
+
+    return res.status(200).json({
+      totalUsers: userCount,
+      totalRentals: totalRentals,
+      totalEarnings: totalEarnings,
+    });
+  } catch (error) {
+    console.error("❌ Catch Block Error fetching dashboard stats:", error);
+    return res.status(500).json({ error: "Failed to fetch dashboard stats" });
   }
 };
