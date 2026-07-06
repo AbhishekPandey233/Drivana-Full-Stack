@@ -172,7 +172,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 // Get dashboard stats
 export const getDashboardStats = async (req: Request, res: Response): Promise<any> => {
   try {
-    const userCount = await User.countDocuments({ role: "user" });
+    const userCount = await User.countDocuments();
 
     const rentalsPipeline = [
       { $group: { _id: null, totalEarnings: { $sum: "$totalPrice" }, totalRentals: { $sum: 1 } } }
