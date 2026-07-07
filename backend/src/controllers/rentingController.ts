@@ -196,6 +196,48 @@ export const cancelRenting = async (req: AuthenticatedRequest, res: Response): P
   }
 };
 
+// @desc    Process a rental payment (marks rental as paid)
+// @route   POST /api/rentings/:id/pay
+// @note    Sensitive card details are validated in-transit but NEVER stored.
+export const payRental = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    const { cardNumber, cvc, expiry, cardholderName } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized access profile." });
+    }
+
+    // Process (validate) sensitive payment data without persisting it.
+    if (!cardholderName || !cardNumber || !expiry || !cvc) {
+      return res.status(400).json({ error: "All payment details are required." });
+    }
+
+    const renting = await Renting.findById(id).populate("vehicle");
+    if (!renting) {
+      return res.status(404).json({ error: "Rental record not found." });
+    }
+
+    if (renting.user.toString() !== userId) {
+      return res.status(403).json({ error: "You can only pay for your own rentals." });
+    }
+
+    if (renting.paymentStatus === "paid") {
+      return res.status(400).json({ error: "This rental has already been paid." });
+    }
+
+    // Mark the rental as paid. Card details are intentionally discarded.
+    renting.paymentStatus = "paid";
+    await renting.save();
+
+    return res.status(200).json({ success: true, renting });
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    return res.status(500).json({ error: "Server error while processing payment." });
+  }
+};
+
 // @desc    Get all rentals (admin only)
 // @route   GET /api/rentings/admin/all
 export const getAllRentings = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
