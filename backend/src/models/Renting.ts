@@ -7,6 +7,7 @@ export interface IRenting extends Document {
   endDate: Date;
   totalPrice: number;
   status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentStatus: "unpaid" | "paid";
 }
 
 const RentingSchema = new Schema<IRenting>(
@@ -20,6 +21,11 @@ const RentingSchema = new Schema<IRenting>(
       type: String, 
       enum: ["pending", "confirmed", "completed", "cancelled"], 
       default: "confirmed" 
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid"],
+      default: "unpaid"
     },
   },
   { timestamps: true }
