@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AuthGate from "../navigation/AuthGate";
 import Header from "../navigation/Header";
 import Footer from "../navigation/Footer";
@@ -29,10 +30,12 @@ interface Renting {
   endDate: string;
   totalPrice: number;
   status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentStatus?: "unpaid" | "paid";
 }
 
 export default function ViewRentsPage() {
   const { token } = useAuth();
+  const router = useRouter();
   const [rentals, setRentals] = useState<Renting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -372,6 +375,19 @@ export default function ViewRentsPage() {
                           </button>
                         </div>
 
+                        {rental.paymentStatus === "paid" ? (
+                          <div className="w-full h-10 rounded-xl bg-emerald-50 font-bold text-xs text-emerald-600 shadow-sm flex items-center justify-center uppercase tracking-wider">
+                            Fees Paid
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => router.push(`/payment?rentalId=${rental._id}`)}
+                            className="w-full h-10 rounded-xl bg-emerald-500 font-bold text-xs text-white shadow-sm hover:bg-emerald-600 transition-colors uppercase tracking-wider"
+                          >
+                            Pay
+                          </button>
+                        )}
+
                         <button
                           onClick={() => setCancelModalOpen(rental._id)}
                           disabled={getDaysRemaining(rental.endDate) === 0}
@@ -405,7 +421,9 @@ export default function ViewRentsPage() {
                   Confirm Cancellation
                 </h2>
                 <p className="text-sm text-slate-500 mt-1">
-                  Are you sure you want to cancel this rental? This action cannot be undone.
+                  {rentals.find((r) => r._id === cancelModalOpen)?.paymentStatus === "paid"
+                    ? "you wont be getting your money back! if you cancel you won't get to enjoy the stuff you paid for !!"
+                    : "Are you sure you want to cancel this rental? This action cannot be undone."}
                 </p>
               </div>
 
