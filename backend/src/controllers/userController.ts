@@ -175,6 +175,7 @@ export const getDashboardStats = async (req: Request, res: Response): Promise<an
     const userCount = await User.countDocuments();
 
     const rentalsPipeline = [
+      { $match: { paymentStatus: "paid" } },
       { $group: { _id: null, totalEarnings: { $sum: "$totalPrice" }, totalRentals: { $sum: 1 } } }
     ];
 
