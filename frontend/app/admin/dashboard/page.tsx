@@ -117,7 +117,7 @@ export default function DashboardPage() {
           <span className="text-4xl font-black text-[#6366F1] block mt-2 tracking-tight">
             {loading ? "—" : `$${stats.totalEarnings}`}
           </span>
-          <span className="text-xs font-medium text-slate-400 block mt-2">From confirmed rentals</span>
+          <span className="text-xs font-medium text-slate-400 block mt-2">From paid rentals</span>
         </div>
       </div>
 
