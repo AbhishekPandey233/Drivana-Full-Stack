@@ -17,30 +17,6 @@ const BRAND_LOGOS = [
   { src: '/audilogo.png', alt: 'Audi' },
 ];
 
-const BLOG_POSTS = [
-  {
-    id: 1,
-    title: 'How To Choose The Right Car',
-    category: 'News',
-    date: '12 April 2024',
-    bgClass: 'bg-gradient-to-br from-blue-200 to-gray-300' 
-  },
-  {
-    id: 2,
-    title: 'Which plan is right for me?',
-    category: 'News',
-    date: '12 April 2024',
-    bgClass: 'bg-gradient-to-br from-sky-200 to-blue-300'
-  },
-  {
-    id: 3,
-    title: 'Enjoy Speed, Choice & Total Control',
-    category: 'News',
-    date: '12 April 2024',
-    bgClass: 'bg-gradient-to-br from-indigo-200 to-slate-300'
-  }
-];
-
 export default function ContactUsPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -195,29 +171,6 @@ export default function ContactUsPage() {
               </div>
             </div>
 
-          </div>
-        </section>
-
-        {/* LATEST BLOG POSTS & NEWS */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-10 tracking-tight">Latest blog posts & news</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-            {BLOG_POSTS.map((post) => (
-              <div key={post.id} className="group cursor-pointer">
-                <div className={`w-full aspect-[16/10] ${post.bgClass} rounded-3xl mb-4 relative overflow-hidden shadow-inner filter brightness-95 group-hover:brightness-90 transition-all duration-200 flex items-center justify-center`}>
-                  <span className="text-4xl opacity-20 filter blur-[1px] select-none">📰</span>
-                </div>
-                <h3 className="text-base font-extrabold text-gray-900 tracking-tight leading-snug group-hover:text-[#543EE3] transition-colors mb-2">
-                  {post.title}
-                </h3>
-                <div className="text-[11px] text-gray-400 font-bold tracking-wide space-x-1">
-                  <span>{post.category}</span>
-                  <span>/</span>
-                  <span>{post.date}</span>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
