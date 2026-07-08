@@ -276,129 +276,150 @@ export default function ViewRentsPage() {
 
             {!loading && rentals.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rentals.map((rental) => (
-                  <div
-                    key={rental._id}
-                    className="bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden flex flex-col"
-                  >
-                    <div className="w-full aspect-[16/10] bg-[#F3F4F6] flex items-center justify-center relative border-b border-slate-100">
-                      {renderImage(rental.vehicle)}
-                    </div>
+                {rentals.map((rental) => {
+                  const daysLeft = getDaysRemaining(rental.endDate);
+                  const daysBadgeClass =
+                    daysLeft === 0
+                      ? "bg-slate-100 text-slate-500"
+                      : daysLeft <= 3
+                      ? "bg-red-50 text-red-600"
+                      : daysLeft <= 7
+                      ? "bg-amber-50 text-amber-600"
+                      : "bg-emerald-50 text-emerald-600";
 
-                    <div className="p-6 flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-slate-900 capitalize mb-1">
-                          {rental.vehicle.name}
-                        </h3>
-                        <span className="text-[10px] uppercase font-bold text-[#6366F1] bg-indigo-50 px-2.5 py-1 rounded-full tracking-wider">
+                  return (
+                    <div
+                      key={rental._id}
+                      className="group bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
+                    >
+                      <div className="w-full aspect-[16/10] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center relative overflow-hidden">
+                        {renderImage(rental.vehicle)}
+                        <span className="absolute top-3 left-3 text-[10px] uppercase font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded-full tracking-wider">
                           {rental.vehicle.type}
                         </span>
-
-                        <div className="mt-4 space-y-2">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-400 font-medium">Start Date</span>
-                            <span className="text-slate-800 font-semibold">
-                              {formatDate(rental.startDate)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-400 font-medium">End Date</span>
-                            <span className="text-slate-800 font-semibold">
-                              {formatDate(rental.endDate)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-slate-400 font-medium">Days Remaining</span>
-                            <span className="text-slate-800 font-semibold">
-                              {getDaysRemaining(rental.endDate)} days
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs pt-2 border-t border-slate-100">
-                            <span className="text-slate-400 font-medium">Total Price</span>
-                            <span className="text-[#6366F1] font-bold text-base">
-                              ${rental.totalPrice}
-                            </span>
-                          </div>
-                        </div>
+                        <span
+                          className={`absolute top-3 right-3 text-[10px] uppercase font-bold px-2.5 py-1 rounded-full tracking-wider ${
+                            rental.paymentStatus === "paid"
+                              ? "bg-emerald-500 text-white"
+                              : "bg-white/90 text-slate-600"
+                          }`}
+                        >
+                          {rental.paymentStatus === "paid" ? "Paid" : "Unpaid"}
+                        </span>
                       </div>
 
-                      <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                      <div className="p-5 flex-1 flex flex-col gap-4">
                         <div>
-                          <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
-                            Extend by (days)
-                          </label>
-                          <input
-                            type="number"
-                            min="1"
-                            value={extendDays[rental._id] || ""}
-                            onChange={(e) =>
-                              setExtendDays((prev) => ({
-                                ...prev,
-                                [rental._id]: parseInt(e.target.value) || 0,
-                              }))
-                            }
-                            placeholder="Enter days"
-                            className="w-full bg-[#FAFAFC] border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-2"
-                          />
-                          <button
-                            onClick={() => handleExtend(rental._id)}
-                            disabled={extendingId === rental._id || getDaysRemaining(rental.endDate) === 0}
-                            className="w-full h-10 rounded-xl bg-[#6366F1] font-bold text-xs text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider disabled:opacity-50"
-                          >
-                            {extendingId === rental._id ? "Extending..." : "Extend Rental"}
-                          </button>
+                          <h3 className="text-lg font-bold text-slate-900 capitalize leading-tight">
+                            {rental.vehicle.name}
+                          </h3>
+                          <p className="text-xs text-slate-400 font-medium mt-0.5">
+                            {rental.vehicle.specs.gearBox} &middot; {rental.vehicle.specs.fuel}
+                          </p>
                         </div>
 
-                        <div>
-                          <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
-                            Decrease by (days)
-                          </label>
-                          <input
-                            type="number"
-                            min="1"
-                            value={decreaseDays[rental._id] || ""}
-                            onChange={(e) =>
-                              setDecreaseDays((prev) => ({
-                                ...prev,
-                                [rental._id]: parseInt(e.target.value) || 0,
-                              }))
-                            }
-                            placeholder="Enter days"
-                            className="w-full bg-[#FAFAFC] border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-2"
-                          />
-                          <button
-                            onClick={() => handleDecrease(rental._id)}
-                            disabled={decreaseId === rental._id || getDaysRemaining(rental.endDate) === 0}
-                            className="w-full h-10 rounded-xl bg-slate-100 font-bold text-xs text-slate-600 shadow-sm hover:bg-slate-200 transition-colors uppercase tracking-wider disabled:opacity-50"
-                          >
-                            {decreaseId === rental._id ? "Decreasing..." : "Decrease Rental"}
-                          </button>
-                        </div>
-
-                        {rental.paymentStatus === "paid" ? (
-                          <div className="w-full h-10 rounded-xl bg-emerald-50 font-bold text-xs text-emerald-600 shadow-sm flex items-center justify-center uppercase tracking-wider">
-                            Fees Paid
+                        <div className="grid grid-cols-2 gap-3 bg-[#FAFAFC] border border-slate-100 rounded-xl p-3 text-xs">
+                          <div>
+                            <p className="text-slate-400 font-medium mb-0.5">Start</p>
+                            <p className="text-slate-800 font-semibold">{formatDate(rental.startDate)}</p>
                           </div>
-                        ) : (
-                          <button
-                            onClick={() => router.push(`/payment?rentalId=${rental._id}`)}
-                            className="w-full h-10 rounded-xl bg-emerald-500 font-bold text-xs text-white shadow-sm hover:bg-emerald-600 transition-colors uppercase tracking-wider"
-                          >
-                            Pay
-                          </button>
-                        )}
+                          <div>
+                            <p className="text-slate-400 font-medium mb-0.5">End</p>
+                            <p className="text-slate-800 font-semibold">{formatDate(rental.endDate)}</p>
+                          </div>
+                        </div>
 
-                        <button
-                          onClick={() => setCancelModalOpen(rental._id)}
-                          disabled={getDaysRemaining(rental.endDate) === 0}
-                          className="w-full h-10 rounded-xl bg-red-50 font-bold text-xs text-red-600 shadow-sm hover:bg-red-100 transition-colors uppercase tracking-wider disabled:opacity-50"
-                        >
-                          Cancel Rental
-                        </button>
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${daysBadgeClass}`}>
+                            {daysLeft} {daysLeft === 1 ? "day" : "days"} left
+                          </span>
+                          <span className="text-[#6366F1] font-bold text-lg">
+                            ${rental.totalPrice}
+                          </span>
+                        </div>
+
+                        <div className="pt-4 border-t border-slate-100 space-y-3">
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                                Extend
+                              </label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={extendDays[rental._id] || ""}
+                                onChange={(e) =>
+                                  setExtendDays((prev) => ({
+                                    ...prev,
+                                    [rental._id]: parseInt(e.target.value) || 0,
+                                  }))
+                                }
+                                placeholder="Days"
+                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-1.5"
+                              />
+                              <button
+                                onClick={() => handleExtend(rental._id)}
+                                disabled={extendingId === rental._id || getDaysRemaining(rental.endDate) === 0}
+                                className="w-full h-9 rounded-lg bg-[#6366F1] font-bold text-[11px] text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider disabled:opacity-50"
+                              >
+                                {extendingId === rental._id ? "..." : "Extend"}
+                              </button>
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                                Decrease
+                              </label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={decreaseDays[rental._id] || ""}
+                                onChange={(e) =>
+                                  setDecreaseDays((prev) => ({
+                                    ...prev,
+                                    [rental._id]: parseInt(e.target.value) || 0,
+                                  }))
+                                }
+                                placeholder="Days"
+                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-1.5"
+                              />
+                              <button
+                                onClick={() => handleDecrease(rental._id)}
+                                disabled={decreaseId === rental._id || getDaysRemaining(rental.endDate) === 0}
+                                className="w-full h-9 rounded-lg bg-slate-100 font-bold text-[11px] text-slate-600 shadow-sm hover:bg-slate-200 transition-colors uppercase tracking-wider disabled:opacity-50"
+                              >
+                                {decreaseId === rental._id ? "..." : "Decrease"}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            {rental.paymentStatus === "paid" ? (
+                              <div className="h-9 rounded-lg bg-emerald-50 font-bold text-[11px] text-emerald-600 shadow-sm flex items-center justify-center uppercase tracking-wider">
+                                Fees Paid
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => router.push(`/payment?rentalId=${rental._id}`)}
+                                className="h-9 rounded-lg bg-emerald-500 font-bold text-[11px] text-white shadow-sm hover:bg-emerald-600 transition-colors uppercase tracking-wider"
+                              >
+                                Pay
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => setCancelModalOpen(rental._id)}
+                              disabled={getDaysRemaining(rental.endDate) === 0}
+                              className="h-9 rounded-lg bg-red-50 font-bold text-[11px] text-red-600 shadow-sm hover:bg-red-100 transition-colors uppercase tracking-wider disabled:opacity-50"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </main>
