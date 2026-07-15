@@ -4,7 +4,10 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import { registerSchema, loginSchema } from '../validators/authValidator';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 export const register = async (req: Request, res: Response): Promise<any> => {
   try {
