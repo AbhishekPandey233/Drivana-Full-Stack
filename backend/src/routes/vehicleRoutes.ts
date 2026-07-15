@@ -8,6 +8,7 @@ import {
   deleteVehicle
 } from "../controllers/vehicleController";
 import Vehicle from "../models/Vehicle";
+import { requireAdmin } from "../middleware/adminMiddleware";
 
 const router = Router();
 
@@ -51,7 +52,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", requireAdmin, upload.single("image"), async (req, res) => {
   try {
     const vehicleData: any = { ...req.body };
     if (req.file) {
@@ -70,6 +71,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 router.put(
   "/:id",
+  requireAdmin,
   upload.single("image"),
   persistImageUrl,
   async (req, res) => {
@@ -78,6 +80,6 @@ router.put(
 );
 
 router.get("/:id", getVehicleById);
-router.delete("/:id", deleteVehicle);
+router.delete("/:id", requireAdmin, deleteVehicle);
 
 export default router;
