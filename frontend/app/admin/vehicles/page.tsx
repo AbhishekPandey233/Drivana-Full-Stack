@@ -142,7 +142,7 @@ export default function VehiclesPage() {
       <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Drivana Fleet Fleet</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Drivana Fleet </h1>
             <p className="text-sm font-medium text-slate-400 mt-1">
               Tracking <span className="text-slate-800 font-bold">{vehicles.length}</span> active operational vehicles
             </p>
@@ -214,10 +214,7 @@ export default function VehiclesPage() {
                     {/* Action Triggers */}
                     <td className="py-4 pr-4 text-right align-middle">
                       <div className="inline-flex items-center gap-2">
-                        <button className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-2 py-1">
-                          View
-                        </button>
-<button 
+                        <button
                           onClick={() => router.push(`/admin/vehicles/edit/${vehicle._id}`)}
                           className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
                         >
