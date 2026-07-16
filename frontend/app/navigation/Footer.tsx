@@ -11,8 +11,8 @@ export default function Footer() {
           
           {/* Main Logo Group */}
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🚘</span>
-            <span className="font-black text-base tracking-tight">Car Rental</span>
+            <span className="text-2xl"></span>
+            <span className="font-black text-base tracking-tight">DRIVANA</span>
           </div>
 
           {/* Contact Item: Address */}
@@ -20,7 +20,7 @@ export default function Footer() {
             <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">📍</div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Address</h4>
-              <p className="text-xs font-extrabold text-gray-900 mt-0.5">Oxford Ave. Cary, NC 27511</p>
+              <p className="text-xs font-extrabold text-gray-900 mt-0.5">KATHMANDU</p>
             </div>
           </div>
 
@@ -29,7 +29,7 @@ export default function Footer() {
             <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">✉</div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Email</h4>
-              <p className="text-xs font-extrabold text-gray-900 mt-0.5">nwiqer@yahoo.com</p>
+              <p className="text-xs font-extrabold text-gray-900 mt-0.5">AVENGER@gmail.com</p>
             </div>
           </div>
 
@@ -38,7 +38,7 @@ export default function Footer() {
             <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">📞</div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Phone</h4>
-              <p className="text-xs font-extrabold text-gray-900 mt-0.5">+537 547-6401</p>
+              <p className="text-xs font-extrabold text-gray-900 mt-0.5">9876543212</p>
             </div>
           </div>
 
@@ -50,8 +50,8 @@ export default function Footer() {
           {/* Brand Intro Statement Panel */}
           <div className="lg:col-span-5 pr-4">
             <p className="text-sm font-extrabold text-gray-900 tracking-normal leading-snug max-w-sm">
-              Faucibus faucibus pellentesque dictum turpis. <br />
-              Id pellentesque turpis massa a id iaculis lorem t...
+              Book any car any time. The most convenient way to travel. <br />
+              It is time to experience the freedom of the open road with our premium car rental service. Whether your planning a weekend getaway or a business trip, we have the perfect vehicle for you.
             </p>
             
             {/* Social Icons Strip */}
@@ -69,9 +69,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs font-bold text-gray-500">
               <li><Link href="/about" className="hover:text-indigo-600 transition-colors">About us</Link></li>
               <li><Link href="/contact" className="hover:text-indigo-600 transition-colors">Contact us</Link></li>
-              <li><Link href="/gallery" className="hover:text-indigo-600 transition-colors">Gallery</Link></li>
-              <li><Link href="/blog" className="hover:text-indigo-600 transition-colors">Blog</Link></li>
-              <li><Link href="/faq" className="hover:text-indigo-600 transition-colors">F.A.Q</Link></li>
+              <li><Link href="/vehicles" className="hover:text-indigo-600 transition-colors">Vehicles</Link></li>
             </ul>
           </div>
 
