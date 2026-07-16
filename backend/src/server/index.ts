@@ -1,5 +1,6 @@
+import "dotenv/config";
+
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
@@ -7,8 +8,6 @@ import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
 import vehicleRoutes from "../routes/vehicleRoutes";
 import rentingRoutes from "../routes/rentingRoutes"; // Imported here
-
-dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
