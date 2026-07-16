@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Header from '../../navigation/Header';
 import Footer from '../../navigation/Footer';
 import AuthGate from '../../navigation/AuthGate';
@@ -32,9 +33,25 @@ interface Vehicle {
 }
 
 export default function Homepage() {
+  const router = useRouter();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [bookingForm, setBookingForm] = useState({ carType: '', pickupLocation: '' });
+
+  const handleBookingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setBookingForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingForm.carType || !bookingForm.pickupLocation) {
+      alert('Please fill out all the booking criteria.');
+      return;
+    }
+    router.push(`/vehicles?category=${encodeURIComponent(bookingForm.carType)}`);
+  };
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -108,10 +125,15 @@ export default function Homepage() {
             {/* Hero Right: Booking Form Container Card */}
             <div className="mt-8 lg:mt-0 w-full max-w-sm bg-white rounded-2xl p-6 text-gray-800 shadow-xl z-10">
               <h3 className="text-lg font-bold text-center mb-4">Book your car</h3>
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-4" onSubmit={handleBookingSubmit}>
                 <div>
                   <label className="text-xs font-semibold text-gray-500 block mb-1">Car type</label>
-                  <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-gray-50 outline-none cursor-pointer">
+                  <select
+                    name="carType"
+                    value={bookingForm.carType}
+                    onChange={handleBookingChange}
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-gray-50 outline-none cursor-pointer"
+                  >
                     <option value="">Select type</option>
                     <option value="suv">SUV</option>
                     <option value="sedan">Sedan</option>
@@ -121,13 +143,18 @@ export default function Homepage() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-500 block mb-1">Pick up location</label>
-                  <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-gray-50 outline-none cursor-pointer">
+                  <select
+                    name="pickupLocation"
+                    value={bookingForm.pickupLocation}
+                    onChange={handleBookingChange}
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-gray-50 outline-none cursor-pointer"
+                  >
                     <option value="">Select location</option>
                     <option value="dillibazar">Dillibazar, Kathmandu</option>
                     <option value="new_baneshwor">New Baneshwor, Kathmandu</option>
                   </select>
                 </div>
-                <button className="w-full bg-[#F59E0B] hover:bg-amber-600 text-white font-bold text-sm py-3 rounded-lg uppercase mt-4 transition">
+                <button type="submit" className="w-full bg-[#F59E0B] hover:bg-amber-600 text-white font-bold text-sm py-3 rounded-lg uppercase mt-4 transition">
                   Book now
                 </button>
               </form>
