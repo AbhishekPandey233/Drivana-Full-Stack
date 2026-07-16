@@ -190,10 +190,7 @@ export default function UsersPage() {
 
                     <td className="py-4 pr-4 text-right align-middle">
                       <div className="inline-flex items-center gap-2">
-                        <button className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-2 py-1">
-                          View
-                        </button>
-                        <button 
+                        <button
                            onClick={() => router.push(`/admin/users/edit?id=${user._id}`)}
                                className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
                                   >
