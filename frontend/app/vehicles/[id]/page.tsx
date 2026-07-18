@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { Settings, Fuel, DoorOpen, Snowflake, Users, Route, Check, ArrowRight, AlertCircle } from "lucide-react";
 import AuthGate from "../../navigation/AuthGate";
 import Header from '../../navigation/Header';
 import Footer from '../../navigation/Footer';
@@ -142,7 +143,7 @@ export default function VehicleDetailsPage() {
             <div className="text-center">
               <h1 className="text-2xl font-bold text-red-600 mb-4">Oops!</h1>
               <p className="text-slate-500 mb-8">{error}</p>
-              <Link href="/vehicles" className="px-6 py-3 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-indigo-600 transition-colors">
+              <Link href="/vehicles" className="px-6 py-3 bg-[#6366F1] text-white rounded-xl text-sm font-bold hover:bg-indigo-600 transition-smooth-fast hover:shadow-md active:scale-95">
                 Back to Vehicles
               </Link>
             </div>
@@ -167,18 +168,28 @@ export default function VehicleDetailsPage() {
           <Header />
 
           <main className="max-w-7xl mx-auto px-4 py-10 space-y-16">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm animate-fade-in-up">
               <div className="lg:col-span-6 space-y-6">
                 <div>
-                  <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">{loading ? 'Loading...' : vehicle?.name}</h1>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">{loading ? 'Loading...' : vehicle?.name}</h1>
+                    {!loading && vehicle?.status && vehicle.status !== 'available' && (
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                        vehicle.status === 'rented' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        <AlertCircle className="w-3 h-3" strokeWidth={2.5} />
+                        {vehicle.status === 'rented' ? 'Currently Rented' : 'Under Maintenance'}
+                      </span>
+                    )}
+                  </div>
                   <div className="mt-2 text-2xl font-bold text-[#6366F1]">
                     {!loading && vehicle ? `$${vehicle.pricePerDay}` : ''} <span className="text-xs text-slate-400 font-medium">/ day</span>
                   </div>
                 </div>
 
-                <div className="w-full aspect-[16/10] bg-[#F3F4F6] rounded-2xl flex items-center justify-center overflow-hidden relative border border-slate-100">
+                <div className="w-full aspect-[16/10] bg-[#F3F4F6] rounded-2xl flex items-center justify-center overflow-hidden relative border border-slate-100 transition-shadow duration-300 hover:shadow-md">
                   {loading ? (
-                    <span className="text-xs font-medium text-slate-400">Loading image...</span>
+                    <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
                   ) : (
                     renderImage(vehicle!)
                   )}
@@ -190,15 +201,15 @@ export default function VehicleDetailsPage() {
                   <h2 className="text-lg font-bold tracking-tight text-slate-900 mb-4">Technical Specification</h2>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { label: "Gear Box", value: vehicle?.specs.gearBox || 'Auto', icon: "⚙️" },
-                      { label: "Fuel", value: vehicle?.specs.fuel || 'Petrol', icon: "⛽" },
-                      { label: "Doors", value: vehicle?.specs.doors ?? 4, icon: "🚪" },
-                      { label: "Air Conditioner", value: vehicle?.equipment.hasAirConditioner ? "Yes" : "No", icon: "❄️" },
-                      { label: "Seats", value: vehicle?.specs.seats ?? 5, icon: "👥" },
-                      { label: "Distance", value: vehicle ? `${vehicle.specs.distance} km` : '500 km', icon: "🛣️" },
+                      { label: "Gear Box", value: vehicle?.specs.gearBox || 'Auto', icon: Settings },
+                      { label: "Fuel", value: vehicle?.specs.fuel || 'Petrol', icon: Fuel },
+                      { label: "Doors", value: vehicle?.specs.doors ?? 4, icon: DoorOpen },
+                      { label: "Air Conditioner", value: vehicle?.equipment.hasAirConditioner ? "Yes" : "No", icon: Snowflake },
+                      { label: "Seats", value: vehicle?.specs.seats ?? 5, icon: Users },
+                      { label: "Distance", value: vehicle ? `${vehicle.specs.distance} km` : '500 km', icon: Route },
                     ].map((spec, i) => (
-                      <div key={i} className="bg-white border border-slate-100 p-4 rounded-xl shadow-sm space-y-1">
-                        <span className="text-lg block mb-1">{spec.icon}</span>
+                      <div key={i} className={`bg-white border border-slate-100 p-4 rounded-xl shadow-sm space-y-1 transition-smooth-fast hover:-translate-y-0.5 hover:shadow-md animate-fade-in-up stagger-${Math.min(i + 1, 6)}`}>
+                        <spec.icon className="w-5 h-5 mb-1 text-[#6366F1]" strokeWidth={2.25} />
                         <span className="text-[11px] font-medium text-slate-400 block">{spec.label}</span>
                         <span className="text-xs font-bold text-slate-800 block">{spec.value}</span>
                       </div>
@@ -206,11 +217,12 @@ export default function VehicleDetailsPage() {
                   </div>
                 </div>
 
-                <button 
+                <button
                   onClick={handleRentNow}
-                  className="w-full sm:w-auto px-10 h-12 rounded-full bg-[#6366F1] font-semibold text-xs text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider"
+                  disabled={vehicle?.status !== 'available'}
+                  className="w-full sm:w-auto px-10 h-12 rounded-full bg-[#6366F1] font-semibold text-xs text-white shadow-sm hover:bg-indigo-600 transition-smooth-fast hover:shadow-lg hover:scale-105 active:scale-95 uppercase tracking-wider disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:hover:scale-100 disabled:hover:shadow-none disabled:cursor-not-allowed"
                 >
-                  Rent Now
+                  {vehicle?.status === 'rented' ? 'Currently Rented' : vehicle?.status === 'maintenance' ? 'Under Maintenance' : 'Rent Now'}
                 </button>
 
                 <div className="pt-2">
@@ -219,8 +231,8 @@ export default function VehicleDetailsPage() {
                     {equipmentList
                       .filter((item) => vehicle && vehicle.equipment[item.key])
                       .map((item) => (
-                        <div key={item.key} className="flex items-center gap-2.5 text-xs font-medium text-slate-600">
-                          <span className="w-4 h-4 bg-indigo-50 border border-indigo-100 rounded-full flex items-center justify-center text-[10px] text-[#6366F1] font-bold">✓</span>
+                        <div key={item.key} className="flex items-center gap-2.5 text-xs font-medium text-slate-600 animate-fade-in-up">
+                          <span className="w-4 h-4 bg-indigo-50 border border-indigo-100 rounded-full flex items-center justify-center text-[#6366F1]"><Check className="w-2.5 h-2.5" strokeWidth={3} /></span>
                           {item.label}
                         </div>
                       ))}
@@ -234,14 +246,15 @@ export default function VehicleDetailsPage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-black tracking-tight text-slate-900">Other cars</h2>
-                <Link href="/vehicles" className="text-xs font-bold text-slate-900 flex items-center gap-1 hover:text-[#6366F1] transition-colors">
-                  View All <span>➔</span>
+                <Link href="/vehicles" className="text-xs font-bold text-slate-900 flex items-center gap-1 hover:text-[#6366F1] transition-smooth-fast group">
+                  View All <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2.25} />
                 </Link>
               </div>
 
               {loading ? (
-                <div className="text-center py-12 text-sm font-medium text-slate-400">
-                  Fetching recommended vehicles...
+                <div className="flex flex-col items-center justify-center gap-3 py-12">
+                  <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+                  <span className="text-sm font-medium text-slate-400">Fetching recommended vehicles...</span>
                 </div>
               ) : otherCars.length === 0 ? (
                 <div className="text-center py-12 text-sm font-medium text-slate-400">
@@ -249,10 +262,12 @@ export default function VehicleDetailsPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {otherCars.map((car) => (
-                    <div key={car._id} className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+                  {otherCars.map((car, idx) => (
+                    <div key={car._id} className={`group card-hover-glow bg-white border border-slate-100 rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-4 animate-fade-in-up stagger-${(idx % 6) + 1}`}>
                       <div className="w-full aspect-[16/10] bg-[#F3F4F6] rounded-2xl flex items-center justify-center relative overflow-hidden border border-slate-50">
-                        {renderImage(car)}
+                        <div className="w-full h-full img-zoom-smooth">
+                          {renderImage(car)}
+                        </div>
                       </div>
 
                       <div className="space-y-3">
@@ -268,13 +283,13 @@ export default function VehicleDetailsPage() {
                         </div>
 
                         <div className="flex items-center justify-between text-[11px] font-medium text-slate-500 border-t border-slate-100 pt-3">
-                          <span className="flex items-center gap-1">⚙️ {car.specs.gearBox}</span>
-                          <span className="flex items-center gap-1">⛽ {car.specs.fuel}</span>
-                          <span className="flex items-center gap-1">❄️ AC</span>
+                          <span className="flex items-center gap-1"><Settings className="w-3 h-3" strokeWidth={2.25} /> {car.specs.gearBox}</span>
+                          <span className="flex items-center gap-1"><Fuel className="w-3 h-3" strokeWidth={2.25} /> {car.specs.fuel}</span>
+                          <span className="flex items-center gap-1"><Snowflake className="w-3 h-3" strokeWidth={2.25} /> AC</span>
                         </div>
                       </div>
 
-                      <Link href={`/vehicles/${car._id}`} className="w-full h-11 rounded-xl bg-[#6366F1] text-white flex items-center justify-center text-xs font-bold hover:bg-indigo-600 transition-colors shadow-sm tracking-wide">
+                      <Link href={`/vehicles/${car._id}`} className="w-full h-11 rounded-xl bg-[#6366F1] text-white flex items-center justify-center text-xs font-bold hover:bg-indigo-600 transition-smooth-fast hover:shadow-md active:scale-95 shadow-sm tracking-wide">
                         View Details
                       </Link>
                     </div>
