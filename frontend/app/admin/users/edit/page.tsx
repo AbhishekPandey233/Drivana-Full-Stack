@@ -133,8 +133,9 @@ function EditUserForm() {
 
   if (loading) {
     return (
-      <div className="text-center py-12 text-sm font-medium text-slate-400">
-        Parsing structural user profile records...
+      <div className="flex flex-col items-center justify-center gap-3 py-12">
+        <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+        <span className="text-sm font-medium text-slate-400">Parsing structural user profile records...</span>
       </div>
     );
   }
@@ -149,8 +150,8 @@ function EditUserForm() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
-        
+      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)] animate-fade-in-up">
+
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Edit User Profile</h1>
           <p className="text-sm font-medium text-slate-400 mt-1">
@@ -159,12 +160,12 @@ function EditUserForm() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold">
+          <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold animate-shake">
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold">
+          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold animate-fade-in-up">
             {success}
           </div>
         )}
@@ -225,14 +226,14 @@ function EditUserForm() {
               <button
                 type="button"
                 onClick={() => router.push("/admin/users")}
-                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-600 disabled:opacity-50"
+                className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-indigo-600 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:active:scale-100"
               >
                 {submitting ? "Saving changes..." : "Apply Updates"}
               </button>
