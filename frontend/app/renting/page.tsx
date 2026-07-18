@@ -3,10 +3,12 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { AlertTriangle, Settings, Fuel, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
 import AuthGate from "../navigation/AuthGate";
 import Header from "../navigation/Header";
 import Footer from "../navigation/Footer";
+import DatePicker from "../components/DatePicker";
 
 const VEHICLE_API_URL = "http://localhost:5000/api/vehicles";
 const RENTING_API_URL = "http://localhost:5000/api/rentings";
@@ -17,6 +19,7 @@ interface Vehicle {
   type: string;
   pricePerDay: number;
   image?: string;
+  status: string;
   specs: {
     gearBox: string;
     fuel: string;
@@ -82,6 +85,11 @@ function RentingContent() {
     e.preventDefault();
     setError(null);
 
+    if (vehicle && vehicle.status !== "available") {
+      setError("Vehicle is no longer available for renting.");
+      return;
+    }
+
     if (!startDate || !endDate) {
       setError("Please select both Start and End Dates to rent.");
       return;
@@ -126,8 +134,9 @@ function RentingContent() {
 
   if (vehicleId && !vehicle && !error) {
     return (
-      <div className="text-center py-24 text-sm font-medium text-slate-400">
-        Syncing selected vehicle details...
+      <div className="flex flex-col items-center justify-center gap-3 py-24">
+        <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+        <span className="text-sm font-medium text-slate-400">Syncing selected vehicle details...</span>
       </div>
     );
   }
@@ -137,7 +146,9 @@ function RentingContent() {
       ? vehicle.image
       : `http://localhost:5000${vehicle.image}`
     : null;
-  const displayError = error ?? routeError;
+  const isUnavailable = Boolean(vehicle && vehicle.status !== "available");
+  const unavailableError = isUnavailable ? "Vehicle is no longer available for renting." : null;
+  const displayError = error ?? unavailableError ?? routeError;
 
   const closeSuccessPopup = () => {
     setSuccessOpen(false);
@@ -155,14 +166,14 @@ function RentingContent() {
         </p>
 
         {displayError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold">
-            ⚠️ {displayError}
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold animate-shake flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" strokeWidth={2.25} /> {displayError}
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Hand: Selection Showcase Summary Card */}
-          <div className="lg:col-span-5 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4">
+          <div className="lg:col-span-5 bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4 animate-fade-in-up">
             <div className="w-full aspect-[16/10] bg-[#F3F4F6] rounded-2xl flex items-center justify-center overflow-hidden border border-slate-50 relative">
               {carImgSrc ? (
                 <div
@@ -179,13 +190,22 @@ function RentingContent() {
             </div>
 
             <div>
-              <span className="text-[10px] uppercase font-bold text-[#6366F1] bg-indigo-50 px-2.5 py-1 rounded-full tracking-wider">
-                {vehicle?.type}
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] uppercase font-bold text-[#6366F1] bg-indigo-50 px-2.5 py-1 rounded-full tracking-wider">
+                  {vehicle?.type}
+                </span>
+                {isUnavailable && (
+                  <span className={`text-[10px] uppercase font-bold px-2.5 py-1 rounded-full tracking-wider ${
+                    vehicle?.status === "rented" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"
+                  }`}>
+                    {vehicle?.status === "rented" ? "Currently Rented" : "Under Maintenance"}
+                  </span>
+                )}
+              </div>
               <h2 className="text-xl font-bold text-slate-900 mt-2 capitalize">{vehicle?.name}</h2>
               <div className="flex items-center gap-4 text-xs font-medium text-slate-400 mt-1">
-                <span>⚙️ {vehicle?.specs.gearBox}</span>
-                <span>⛽ {vehicle?.specs.fuel}</span>
+                <span className="flex items-center gap-1"><Settings className="w-3 h-3" strokeWidth={2.25} /> {vehicle?.specs.gearBox}</span>
+                <span className="flex items-center gap-1"><Fuel className="w-3 h-3" strokeWidth={2.25} /> {vehicle?.specs.fuel}</span>
               </div>
             </div>
 
@@ -196,7 +216,7 @@ function RentingContent() {
           </div>
 
           {/* Right Hand: Interactive Date Selection Form Component */}
-          <div className="lg:col-span-7 bg-white border border-slate-100 p-6 md:p-8 rounded-3xl shadow-sm">
+          <div className="lg:col-span-7 bg-white border border-slate-100 p-6 md:p-8 rounded-3xl shadow-sm animate-fade-in-up stagger-1">
             <h3 className="text-lg font-bold text-slate-900 mb-6">Reservation Setup</h3>
 
             <form onSubmit={handleRentingSubmit} className="space-y-6">
@@ -205,13 +225,11 @@ function RentingContent() {
                   <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
                     Pick-up Start Date
                   </label>
-                  <input
-                    type="date"
-                    required
+                  <DatePicker
                     value={startDate}
                     min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full bg-[#FAFAFC] border border-slate-200 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1]"
+                    onChange={setStartDate}
+                    placeholder="Select start date"
                   />
                 </div>
 
@@ -219,24 +237,22 @@ function RentingContent() {
                   <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
                     Drop-off End Date
                   </label>
-                  <input
-                    type="date"
-                    required
+                  <DatePicker
                     value={endDate}
                     min={startDate || new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full bg-[#FAFAFC] border border-slate-200 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1]"
+                    onChange={setEndDate}
+                    placeholder="Select end date"
                   />
                 </div>
               </div>
 
               {/* Price Preview Block */}
-              <div className="bg-[#FAFAFC] border border-slate-100 rounded-2xl p-4 flex justify-between items-center">
+              <div className="bg-[#FAFAFC] border border-slate-100 rounded-2xl p-4 flex justify-between items-center transition-colors duration-300">
                 <div>
                   <h4 className="text-xs font-bold text-slate-800">Total Renting Price</h4>
                   <p className="text-[10px] font-medium text-slate-400 mt-0.5">Calculated based on duration</p>
                 </div>
-                <div className="text-2xl font-black text-[#6366F1]">
+                <div key={totalPrice} className="text-2xl font-black text-[#6366F1] animate-scale-in">
                   ${totalPrice}
                 </div>
               </div>
@@ -244,15 +260,15 @@ function RentingContent() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
-                  disabled={submitting || !vehicle}
-                  className="flex-1 h-12 rounded-xl bg-[#6366F1] font-bold text-xs text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider disabled:opacity-50"
+                  disabled={submitting || !vehicle || isUnavailable}
+                  className="flex-1 h-12 rounded-xl bg-[#6366F1] font-bold text-xs text-white shadow-sm hover:bg-indigo-600 transition-smooth-fast hover:shadow-lg active:scale-95 uppercase tracking-wider disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:hover:shadow-none disabled:active:scale-100 disabled:cursor-not-allowed"
                 >
-                  {submitting ? "Processing Transaction..." : "Confirm Renting"}
+                  {submitting ? "Processing Transaction..." : isUnavailable ? "Vehicle Unavailable" : "Confirm Renting"}
                 </button>
 
                 <Link
                   href={vehicleId ? `/vehicles/${vehicleId}` : "/vehicles"}
-                  className="h-12 px-6 rounded-xl border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors uppercase tracking-wider"
+                  className="h-12 px-6 rounded-xl border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 hover:bg-slate-50 transition-smooth-fast active:scale-95 uppercase tracking-wider"
                 >
                   Cancel
                 </Link>
@@ -264,11 +280,11 @@ function RentingContent() {
 
       {successOpen && vehicle && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8 animate-fade-in"
           onClick={closeSuccessPopup}
         >
           <div
-            className="mt-24 w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7"
+            className="mt-24 w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7 animate-scale-in"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
@@ -277,8 +293,8 @@ function RentingContent() {
                   <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,#f8fafc,#cbd5e1)] text-lg font-black text-slate-600">
                     {vehicle.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-emerald-300 bg-white text-[10px] font-black text-emerald-500 shadow-sm">
-                    ✓
+                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-emerald-300 bg-white text-emerald-500 shadow-sm">
+                    <CheckCircle2 className="w-3 h-3" strokeWidth={2.5} />
                   </span>
                 </div>
 
@@ -291,7 +307,7 @@ function RentingContent() {
               <button
                 type="button"
                 onClick={closeSuccessPopup}
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-colors hover:bg-violet-50 hover:text-slate-700"
+                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-smooth-fast hover:bg-violet-50 hover:text-slate-700 active:scale-90"
                 aria-label="Close renting confirmation popup"
               >
                 ×
@@ -323,7 +339,7 @@ function RentingContent() {
               <button
                 type="button"
                 onClick={closeSuccessPopup}
-                className="inline-flex w-full items-center justify-center rounded-md bg-[#2F80ED] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-600 truncate"
+                className="inline-flex w-full items-center justify-center rounded-md bg-[#2F80ED] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-smooth-fast hover:bg-blue-600 hover:shadow-md active:scale-95 truncate"
               >
                 Continue
               </button>
@@ -331,7 +347,7 @@ function RentingContent() {
               <button
                 type="button"
                 onClick={() => router.push("/vehicles")}
-                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-3 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 truncate"
+                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-3 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95 truncate"
               >
                 Go to Vehicles
               </button>
@@ -350,8 +366,9 @@ export default function RentingPage() {
         <div>
           <Header />
           <Suspense fallback={
-            <div className="text-center py-24 text-sm font-medium text-slate-400">
-              Loading parameters...
+            <div className="flex flex-col items-center justify-center gap-3 py-24">
+              <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+              <span className="text-sm font-medium text-slate-400">Loading parameters...</span>
             </div>
           }>
             <RentingContent />
