@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Settings, Fuel, Snowflake } from 'lucide-react';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer';
 import AuthGate from '../navigation/AuthGate';
@@ -125,7 +126,7 @@ function VehiclesCatalogContent() {
       <section className="max-w-7xl mx-auto px-4 pt-12 text-center">
         <div className="w-full bg-gray-50/60 rounded-[32px] py-6 px-10 flex flex-wrap items-center justify-around gap-6 border border-gray-100/50 mb-10">
           {BRAND_LOGOS.map((logo, idx) => (
-            <div key={`top-${idx}`} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-200">
+            <div key={`top-${idx}`} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-smooth-fast">
               <Image 
                 src={logo.src} 
                 alt={`${logo.alt} Top`} 
@@ -146,9 +147,9 @@ function VehiclesCatalogContent() {
               <button
                 key={category}
                 onClick={() => handleCategoryChange(category)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm border flex items-center gap-2 ${
-                  isSelected 
-                    ? 'bg-[#6366F1] text-white border-[#6366F1]' 
+                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-smooth-fast shadow-sm border flex items-center gap-2 hover:scale-105 active:scale-95 ${
+                  isSelected
+                    ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-md'
                     : 'bg-gray-50/60 text-gray-500 border-gray-100 hover:bg-gray-100/80 hover:text-gray-900'
                 }`}
               >
@@ -162,15 +163,18 @@ function VehiclesCatalogContent() {
       {/* CAR CATALOG COMPONENT GRID */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         {loading ? (
-          <div className="text-center py-12 text-sm font-medium text-slate-400">
-            Fetching fleet records from database...
+          <div className="flex flex-col items-center justify-center gap-3 py-12">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+            <span className="text-sm font-medium text-slate-400">Fetching fleet records from database...</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredVehicles.map((car) => (
-              <div key={car._id} className="bg-white border border-gray-100 rounded-3xl p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            {filteredVehicles.map((car, idx) => (
+              <div key={car._id} className={`group card-hover-glow bg-white border border-gray-100 rounded-3xl p-5 flex flex-col justify-between shadow-sm animate-fade-in-up stagger-${(idx % 6) + 1}`}>
                 <div className="w-full aspect-[16/10] bg-gray-50 rounded-2xl flex items-center justify-center overflow-hidden mb-5 relative">
-                  {renderImage(car)}
+                  <div className="w-full h-full img-zoom-smooth">
+                    {renderImage(car)}
+                  </div>
                 </div>
 
                 <div className="flex items-start justify-between mb-3">
@@ -199,19 +203,19 @@ function VehiclesCatalogContent() {
 
                 <div className="grid grid-cols-3 gap-1 py-3 border-t border-gray-50 text-[10px] font-semibold text-gray-500 mb-4">
                   <div className="flex items-center gap-1">
-                    <span className="text-gray-400">⦚</span> {car.specs?.gearBox || 'Automatic'}
+                    <Settings className="w-3 h-3 text-gray-400" strokeWidth={2.25} /> {car.specs?.gearBox || 'Automatic'}
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="text-gray-400">⛽</span> {car.specs?.fuel || 'Petrol'}
+                    <Fuel className="w-3 h-3 text-gray-400" strokeWidth={2.25} /> {car.specs?.fuel || 'Petrol'}
                   </div>
                   <div className="flex items-center gap-1 justify-end">
-                    <span className="text-gray-400">❄</span> Air Conditioner
+                    <Snowflake className="w-3 h-3 text-gray-400" strokeWidth={2.25} /> Air Conditioner
                   </div>
                 </div>
 
                  <Link
                    href={`/vehicles/${car._id}`}
-                   className="w-full bg-[#6366F1] text-white text-center text-xs font-bold py-3 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm block"
+                   className="w-full bg-[#6366F1] text-white text-center text-xs font-bold py-3 rounded-xl hover:bg-indigo-600 transition-smooth-fast hover:shadow-md active:scale-95 shadow-sm block"
                  >
                    View Details
                  </Link>
@@ -245,7 +249,7 @@ export default function VehiclesPage() {
         <section className="max-w-7xl mx-auto px-4 mt-20">
           <div className="w-full bg-gray-50/60 rounded-[32px] py-6 px-10 flex flex-wrap items-center justify-around gap-6 border border-gray-100/50">
             {BRAND_LOGOS.map((logo, idx) => (
-              <div key={`bottom-${idx}`} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-200">
+              <div key={`bottom-${idx}`} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-smooth-fast">
                 <Image 
                   src={logo.src} 
                   alt={`${logo.alt} Bottom`} 
