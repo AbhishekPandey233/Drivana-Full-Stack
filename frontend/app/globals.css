@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Premium "ease-out-expo"-style curve: fast start, long buttery settle. */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
@@ -26,4 +28,174 @@ body {
 
 html {
   min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Accessible keyboard focus indicator (WCAG 2.4.7) — covers elements
+   that intentionally suppress the default outline for mouse users. */
+:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out both;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* fill-mode: backwards (not "both") on purpose — these animate transform/
+   opacity, and a lingering "forwards" fill would permanently pin that
+   property after the animation ends, silently blocking any later :hover
+   transition on the same element (a real, well-documented CSS gotcha).
+   "backwards" still prevents a flash-of-unstyled-content during the
+   stagger delay, without holding on past the animation's end. */
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out backwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* General-purpose smooth transition — swap in wherever a hover/state
+   change should feel buttery instead of default-"ease" abrupt. */
+.transition-smooth {
+  transition-property: transform, box-shadow, background-color, border-color, color, opacity;
+  transition-duration: 450ms;
+  transition-timing-function: var(--ease-smooth);
+}
+
+/* Card hover: slow lift + scale + a soft colored outline glow.
+   Use on any browsable card (vehicle, rental, admin summary, showcase). */
+.card-hover-glow {
+  transition: transform 0.5s var(--ease-smooth), box-shadow 0.5s var(--ease-smooth), border-color 0.5s var(--ease-smooth);
+}
+.card-hover-glow:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 20px 40px -12px rgba(99, 102, 241, 0.35),
+    0 0 0 1px rgba(99, 102, 241, 0.18),
+    0 0 26px rgba(99, 102, 241, 0.20);
+}
+
+/* Same idea, warmer accent glow for amber/CTA-themed surfaces. */
+.card-hover-glow-amber {
+  transition: transform 0.5s var(--ease-smooth), box-shadow 0.5s var(--ease-smooth), border-color 0.5s var(--ease-smooth);
+}
+.card-hover-glow-amber:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 20px 40px -12px rgba(245, 158, 11, 0.35),
+    0 0 0 1px rgba(245, 158, 11, 0.18),
+    0 0 26px rgba(245, 158, 11, 0.20);
+}
+
+/* Snappier smooth-eased transition for buttons/links — quick reaction,
+   still buttery instead of default-"ease" linear-feeling snap. */
+.transition-smooth-fast {
+  transition-property: transform, box-shadow, background-color, border-color, color, opacity;
+  transition-duration: 220ms;
+  transition-timing-function: var(--ease-smooth);
+}
+
+/* Smooth, slower image zoom for use inside a `.group` hover card. */
+.img-zoom-smooth {
+  transition: transform 0.7s var(--ease-smooth);
+}
+.group:hover .img-zoom-smooth {
+  transform: scale(1.08);
+}
+
+/* Stagger helpers for grids of cards animating in together */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
