@@ -1,5 +1,6 @@
 //Footerimport React from 'react';
 import Link from 'next/link';
+import { MapPin, Mail, Phone, Camera, Play } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -17,7 +18,7 @@ export default function Footer() {
 
           {/* Contact Item: Address */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">📍</div>
+            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center shadow-sm shrink-0"><MapPin className="w-4 h-4" strokeWidth={2.25} /></div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Address</h4>
               <p className="text-xs font-extrabold text-gray-900 mt-0.5">KATHMANDU</p>
@@ -26,7 +27,7 @@ export default function Footer() {
 
           {/* Contact Item: Email */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">✉</div>
+            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center shadow-sm shrink-0"><Mail className="w-4 h-4" strokeWidth={2.25} /></div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Email</h4>
               <p className="text-xs font-extrabold text-gray-900 mt-0.5">AVENGER@gmail.com</p>
@@ -35,7 +36,7 @@ export default function Footer() {
 
           {/* Contact Item: Phone */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center text-sm font-bold shadow-sm shrink-0">📞</div>
+            <div className="w-10 h-10 rounded-full bg-[#FFA000] text-white flex items-center justify-center shadow-sm shrink-0"><Phone className="w-4 h-4" strokeWidth={2.25} /></div>
             <div>
               <h4 className="text-[11px] font-bold text-gray-400 tracking-wide uppercase">Phone</h4>
               <p className="text-xs font-extrabold text-gray-900 mt-0.5">9876543212</p>
@@ -56,10 +57,10 @@ export default function Footer() {
             
             {/* Social Icons Strip */}
             <div className="flex items-center gap-3 mt-6">
-              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:opacity-80 transition-opacity">f</a>
-              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:opacity-80 transition-opacity">📸</a>
-              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:opacity-80 transition-opacity">𝕏</a>
-              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold hover:opacity-80 transition-opacity">▶</a>
+              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold transition-smooth-fast hover:opacity-80 hover:-translate-y-0.5 hover:shadow-md">f</a>
+              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center transition-smooth-fast hover:opacity-80 hover:-translate-y-0.5 hover:shadow-md"><Camera className="w-3.5 h-3.5" strokeWidth={2.25} /></a>
+              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold transition-smooth-fast hover:opacity-80 hover:-translate-y-0.5 hover:shadow-md">𝕏</a>
+              <a href="#" className="w-7 h-7 bg-black text-white rounded-full flex items-center justify-center transition-smooth-fast hover:opacity-80 hover:-translate-y-0.5 hover:shadow-md"><Play className="w-3 h-3" strokeWidth={2.25} fill="currentColor" /></a>
             </div>
           </div>
 
@@ -67,9 +68,9 @@ export default function Footer() {
           <div className="lg:col-span-3 lg:col-start-7">
             <h3 className="text-sm font-black text-gray-900 mb-4 tracking-tight">Useful links</h3>
             <ul className="space-y-2.5 text-xs font-bold text-gray-500">
-              <li><Link href="/about" className="hover:text-indigo-600 transition-colors">About us</Link></li>
-              <li><Link href="/contact" className="hover:text-indigo-600 transition-colors">Contact us</Link></li>
-              <li><Link href="/vehicles" className="hover:text-indigo-600 transition-colors">Vehicles</Link></li>
+              <li><Link href="/about" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">About us</Link></li>
+              <li><Link href="/contact" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Contact us</Link></li>
+              <li><Link href="/vehicles" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Vehicles</Link></li>
             </ul>
           </div>
 
@@ -77,11 +78,11 @@ export default function Footer() {
           <div className="lg:col-span-3">
             <h3 className="text-sm font-black text-gray-900 mb-4 tracking-tight">Vehicles</h3>
             <ul className="space-y-2.5 text-xs font-bold text-gray-500">
-              <li><Link href="/vehicles?type=sedan" className="hover:text-indigo-600 transition-colors">Sedan</Link></li>
-              <li><Link href="/vehicles?type=cabriolet" className="hover:text-indigo-600 transition-colors">Cabriolet</Link></li>
-              <li><Link href="/vehicles?type=pickup" className="hover:text-indigo-600 transition-colors">Pickup</Link></li>
-              <li><Link href="/vehicles?type=minivan" className="hover:text-indigo-600 transition-colors">Minivan</Link></li>
-              <li><Link href="/vehicles?type=suv" className="hover:text-indigo-600 transition-colors">SUV</Link></li>
+              <li><Link href="/vehicles?type=sedan" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Sedan</Link></li>
+              <li><Link href="/vehicles?type=cabriolet" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Cabriolet</Link></li>
+              <li><Link href="/vehicles?type=pickup" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Pickup</Link></li>
+              <li><Link href="/vehicles?type=minivan" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">Minivan</Link></li>
+              <li><Link href="/vehicles?type=suv" className="inline-block transition-smooth-fast hover:text-indigo-600 hover:translate-x-1">SUV</Link></li>
             </ul>
           </div>
 

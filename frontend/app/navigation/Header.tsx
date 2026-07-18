@@ -37,10 +37,11 @@ export default function Header() {
   const isDetailsActive = pathname.startsWith('/vehicles/');
 
   const getLinkClass = (path: string, active?: boolean) => {
-    const baseClass = "text-sm font-medium transition-colors";
+    const baseClass =
+      "text-sm font-medium bg-gradient-to-r from-current to-current bg-no-repeat bg-left-bottom bg-[length:0%_2px] pb-0.5 transition-[color,background-size] duration-300 ease-out";
     const activeClass = "text-gray-900 font-bold";
-    const inactiveClass = "text-gray-600 hover:text-gray-900";
-    
+    const inactiveClass = "text-gray-600 hover:text-gray-900 hover:bg-[length:100%_2px]";
+
     const isActive = active ?? pathname === path;
     return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
   };
@@ -76,11 +77,11 @@ export default function Header() {
     <nav className="w-full bg-white border-b border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between font-sans">
       
       {/* Left side: Logo */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 group">
         {/* Simple inline car SVG matching your logo */}
-        <svg 
-          className="w-7 h-7 text-black" 
-          fill="currentColor" 
+        <svg
+          className="w-7 h-7 text-black transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-6"
+          fill="currentColor"
           viewBox="0 0 24 24"
         >
           <path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C3.4 11 2 12.3 2 14v4c0 .6.4 1 1 1h1c.6 0 1-.4 1-1v-1h14v1c0 .6.4 1 1 1h1c.6 0 1-.4 1-1v-4c0-1.7-1.4-3-3-3.5zM7 6h10v3H7V6zm-1.5 9c-.8 0-1.5-.7-1.5-1.5S4.7 12 5.5 12s1.5.7 1.5 1.5S6.3 15 5.5 15zm13 0c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z"/>
@@ -119,7 +120,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setIsProfileOpen(true)}
-          className="text-sm font-bold tracking-wider text-gray-900 uppercase hover:opacity-80 transition-opacity"
+          className="text-sm font-bold tracking-wider text-gray-900 uppercase hover:opacity-80 transition-smooth-fast hover:scale-105 active:scale-95"
         >
           {auth.isAuthenticated ? 'LOGOUT' : 'LOGIN'}
         </button>
