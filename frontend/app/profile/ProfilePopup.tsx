@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Pencil } from "lucide-react";
 
 type StoredUser = {
   id?: string;
@@ -38,12 +39,12 @@ export default function ProfilePopup({
       {/* Profile Info Popup Modal */}
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8 animate-fade-in"
           onClick={onClose}
         >
           {/* Main Popup Content */}
           <div
-            className="mt-24 w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7"
+            className="mt-24 w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7 animate-scale-in"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">
@@ -52,8 +53,8 @@ export default function ProfilePopup({
                   <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,#f8fafc,#cbd5e1)] text-lg font-black text-slate-600">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-violet-300 bg-white text-[10px] font-black text-violet-500 shadow-sm cursor-pointer">
-                    ✎
+                  <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-violet-300 bg-white text-violet-500 shadow-sm cursor-pointer">
+                    <Pencil className="w-2.5 h-2.5" strokeWidth={2.5} />
                   </span>
                 </div>
 
@@ -66,7 +67,7 @@ export default function ProfilePopup({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-colors hover:bg-violet-50 hover:text-slate-700"
+                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-smooth-fast hover:bg-violet-50 hover:text-slate-700 active:scale-90"
                 aria-label="Close profile popup"
               >
                 ×
@@ -91,7 +92,7 @@ export default function ProfilePopup({
             <div className="mt-8 grid grid-cols-3 gap-3 w-full pb-1">
               <button
                 type="button"
-                className="inline-flex w-full items-center justify-center rounded-md bg-[#2F80ED] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-600 truncate"
+                className="inline-flex w-full items-center justify-center rounded-md bg-[#2F80ED] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-smooth-fast hover:bg-blue-600 hover:shadow-md active:scale-95 truncate"
               >
                 Save Change
               </button>
@@ -99,7 +100,7 @@ export default function ProfilePopup({
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-3 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 truncate"
+                className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-2 py-3 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95 truncate"
               >
                 Go Back
               </button>
@@ -107,7 +108,7 @@ export default function ProfilePopup({
               <button
                 type="button"
                 onClick={onLogoutRequest}
-                className="inline-flex w-full items-center justify-center rounded-md bg-[#FF3B3B] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-600 truncate"
+                className="inline-flex w-full items-center justify-center rounded-md bg-[#FF3B3B] px-2 py-3 text-xs sm:text-sm font-semibold text-white shadow-sm transition-smooth-fast hover:bg-red-600 hover:shadow-md active:scale-95 truncate"
               >
                 LOGOUT
               </button>
@@ -119,11 +120,11 @@ export default function ProfilePopup({
       {/* Logout Confirmation Modal */}
       {logoutConfirmOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 animate-fade-in"
           onClick={onClose}
         >
           <div
-            className="w-full max-w-[420px] rounded-[22px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70"
+            className="w-full max-w-[420px] rounded-[22px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 animate-scale-in"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-rose-50 text-rose-600">
@@ -139,7 +140,7 @@ export default function ProfilePopup({
               <button
                 type="button"
                 onClick={onClose}
-                className="inline-flex min-w-24 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className="inline-flex min-w-24 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-smooth-fast hover:bg-slate-50 active:scale-95"
               >
                 Cancel
               </button>
@@ -147,7 +148,7 @@ export default function ProfilePopup({
               <button
                 type="button"
                 onClick={onLogoutConfirm}
-                className="inline-flex min-w-24 items-center justify-center rounded-xl bg-[#FF3B3B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-600 shadow-sm"
+                className="inline-flex min-w-24 items-center justify-center rounded-xl bg-[#FF3B3B] px-4 py-2.5 text-sm font-semibold text-white transition-smooth-fast hover:bg-red-600 hover:shadow-md active:scale-95 shadow-sm"
               >
                 Confirm
               </button>
