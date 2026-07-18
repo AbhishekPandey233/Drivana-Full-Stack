@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { Check, ChevronUp } from 'lucide-react';
 import Header from '../navigation/Header';
 import Footer from '../navigation/Footer'; // Imported from your navigation folder
 import AuthGate from '../navigation/AuthGate';
@@ -49,7 +50,7 @@ export default function AboutPage() {
       <Header />
 
       {/* 1. BREADCRUMB PAGE TITLE */}
-      <section className="text-center py-12 bg-gray-50/50 border-b border-gray-100">
+      <section className="text-center py-12 bg-gray-50/50 border-b border-gray-100 animate-fade-in-up">
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">About Us</h1>
         <p className="text-xs font-medium text-gray-400">
           Home <span className="mx-1 text-gray-300">/</span> <span className="text-indigo-600 font-semibold">About Us</span>
@@ -67,25 +68,25 @@ export default function AboutPage() {
         
         {/* Right 2 columns broken down into a 2x2 text feature cluster */}
         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
-          <div>
+          <div className="animate-fade-in-up">
             <h4 className="font-bold text-base mb-2 text-gray-900">Variety Brands</h4>
             <p className="text-gray-500 text-xs leading-relaxed">
               We provide a wide variety of vehicle brands like Mercedes, BMW, Toyota, and Ford.
             </p>
           </div>
-          <div>
+          <div className="animate-fade-in-up stagger-1">
             <h4 className="font-bold text-base mb-2 text-gray-900">Awesome Support</h4>
             <p className="text-gray-500 text-xs leading-relaxed">
               Our technical support will provide you the best customer service experience.
             </p>
           </div>
-          <div>
+          <div className="animate-fade-in-up stagger-2">
             <h4 className="font-bold text-base mb-2 text-gray-900">Maximum Freedom</h4>
             <p className="text-gray-500 text-xs leading-relaxed">
               You can rent a car anywhere, anytime, and go anywhere you wish!
             </p>
           </div>
-          <div>
+          <div className="animate-fade-in-up stagger-3">
             <h4 className="font-bold text-base mb-2 text-gray-900">Flexibility On The Go</h4>
             <p className="text-gray-500 text-xs leading-relaxed">
               We provide flexibility on the go with hassle-free extensions and plan adjustments.
@@ -96,15 +97,15 @@ export default function AboutPage() {
 
       {/* 3. BIG STATS COUNTER BAR */}
       <section className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-3 gap-6 text-center border-y border-gray-100 my-4">
-        <div>
+        <div className="transition-smooth hover:-translate-y-1 animate-fade-in-up">
           <span className="text-3xl md:text-4xl font-black text-[#6366F1]">20k+</span>
           <p className="text-xs font-bold text-gray-800 mt-1">Happy customers</p>
         </div>
-        <div>
+        <div className="transition-smooth hover:-translate-y-1 animate-fade-in-up stagger-1">
           <span className="text-3xl md:text-4xl font-black text-[#6366F1]">540+</span>
           <p className="text-xs font-bold text-gray-800 mt-1">Count of cars</p>
         </div>
-        <div>
+        <div className="transition-smooth hover:-translate-y-1 animate-fade-in-up stagger-2">
           <span className="text-3xl md:text-4xl font-black text-[#6366F1]">25+</span>
           <p className="text-xs font-bold text-gray-800 mt-1">Years of experience</p>
         </div>
@@ -128,9 +129,9 @@ export default function AboutPage() {
               "Maximum freedom",
               "Variety Brands"
             ].map((text, idx) => (
-              <div key={idx} className="flex items-center gap-2 text-xs font-medium text-gray-600">
-                <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#6366F1] flex items-center justify-center font-bold text-[10px]">
-                  ✓
+              <div key={idx} className={`flex items-center gap-2 text-xs font-medium text-gray-600 animate-fade-in-up stagger-${idx + 1}`}>
+                <span className="w-5 h-5 rounded-full bg-indigo-100 text-[#6366F1] flex items-center justify-center">
+                  <Check className="w-3 h-3" strokeWidth={3} />
                 </span>
                 {text}
               </div>
@@ -139,14 +140,14 @@ export default function AboutPage() {
         </div>
 
         {/* Right side luxury showcase graphic container displaying aboutpageimage.jpeg */}
-        <div className="bg-gray-100 rounded-3xl aspect-[4/3] w-full flex flex-col items-center justify-center border border-gray-200 order-1 md:order-2 shadow-sm overflow-hidden relative">
-          <Image 
+        <div className="bg-gray-100 rounded-3xl aspect-[4/3] w-full flex flex-col items-center justify-center border border-gray-200 order-1 md:order-2 shadow-sm overflow-hidden relative group animate-scale-in">
+          <Image
             src="/aboutpageimage.jpeg"
             alt="Drivana Fleet Showcase"
             fill
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
+            className="object-cover img-zoom-smooth"
           />
         </div>
       </section>
@@ -156,15 +157,15 @@ export default function AboutPage() {
         <h2 className="text-2xl font-extrabold text-center mb-12 tracking-tight">Our Cars</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {showcaseCars.map((car) => (
-            <div key={car.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col transition-transform duration-300 hover:scale-[1.01]">
-              <div className="relative aspect-[16/10] w-full bg-gray-100">
-                <Image 
+          {showcaseCars.map((car, idx) => (
+            <div key={car.id} className={`group card-hover-glow bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col animate-fade-in-up stagger-${idx + 1}`}>
+              <div className="relative aspect-[16/10] w-full bg-gray-100 overflow-hidden">
+                <Image
                   src={car.src}
                   alt={car.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
+                  className="object-cover img-zoom-smooth"
                 />
               </div>
               <div className="p-5 text-center border-t border-gray-50 bg-white">
@@ -181,19 +182,17 @@ export default function AboutPage() {
         
         <div className="space-y-3">
           {faqItems.map((item, index) => (
-            <div key={index} className="border border-gray-200 rounded-xl bg-white overflow-hidden transition-all duration-200">
-              <button 
+            <div key={index} className={`border rounded-xl bg-white overflow-hidden transition-smooth-fast animate-fade-in-up stagger-${Math.min(index + 1, 6)} ${openFaq === index ? 'border-indigo-200 shadow-sm' : 'border-gray-200'}`}>
+              <button
                 onClick={() => toggleFaq(index)}
-                className="w-full flex items-center justify-between p-4 text-left font-semibold text-sm text-gray-800 hover:bg-gray-50/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left font-semibold text-sm text-gray-800 hover:bg-gray-50/50 transition-colors active:scale-[0.99]"
               >
                 <span>{item.q}</span>
-                <span className={`text-xs transform transition-transform duration-200 text-gray-400 ${openFaq === index ? 'rotate-180' : ''}`}>
-                  ▲
-                </span>
+                <ChevronUp className={`w-4 h-4 shrink-0 transform transition-transform duration-200 text-gray-400 ${openFaq === index ? 'rotate-180' : ''}`} strokeWidth={2.25} />
               </button>
               
               {openFaq === index && (
-                <div className="p-4 pt-0 border-t border-gray-50 text-xs text-gray-500 leading-relaxed animate-fadeIn">
+                <div className="p-4 pt-0 border-t border-gray-50 text-xs text-gray-500 leading-relaxed animate-fade-in">
                   {item.a}
                 </div>
               )}

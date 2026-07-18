@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { MapPin, Mail, Phone, Clock, ChevronDown } from 'lucide-react';
 import Header from '../navigation/Header';
-import Footer from '../navigation/Footer'; 
+import Footer from '../navigation/Footer';
 import AuthGate from '../navigation/AuthGate';
 
 const BRAND_LOGOS = [
@@ -47,7 +48,7 @@ export default function ContactUsPage() {
         <Header />
 
         {/* SECTION TITLE & BREADCRUMB */}
-        <section className="max-w-7xl mx-auto px-4 pt-12 text-center">
+        <section className="max-w-7xl mx-auto px-4 pt-12 text-center animate-fade-in-up">
           <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">Contact Us</h1>
           <div className="text-xs font-semibold text-gray-400 flex justify-center items-center gap-1.5">
             <Link href="/" className="hover:text-gray-600 transition-colors">Home</Link>
@@ -61,7 +62,7 @@ export default function ContactUsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
             {/* Booking Widget Column */}
-            <div className="lg:col-span-4 bg-[#543EE3] rounded-[28px] p-8 flex flex-col justify-between shadow-lg text-white">
+            <div className="lg:col-span-4 bg-[#543EE3] rounded-[28px] p-8 flex flex-col justify-between shadow-lg text-white animate-fade-in-up transition-shadow duration-300 hover:shadow-xl">
               <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">
                 <div>
                   <h2 className="text-xl font-bold tracking-tight mb-6 text-center">Book your car</h2>
@@ -75,7 +76,7 @@ export default function ContactUsPage() {
                             name="carType"
                             value={formData.carType}
                             onChange={handleInputChange}
-                            className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-white placeholder-white/60 focus:outline-none appearance-none cursor-pointer"
+                            className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-white placeholder-white/60 focus:outline-none appearance-none cursor-pointer transition-smooth-fast focus:ring-2 focus:ring-white/60 focus:bg-white/15"
                           >
                             <option value="" disabled hidden>Select type</option>
                             <option value="suv" className="text-gray-900">SUV</option>
@@ -83,7 +84,7 @@ export default function ContactUsPage() {
                             <option value="coupe" className="text-gray-900">Coupe</option>
                             <option value="ev" className="text-gray-900">EV</option>
                           </select>
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/80 text-[10px]">▼</span>
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/80 w-3.5 h-3.5" />
                         </div>
                       </div>
 
@@ -95,13 +96,13 @@ export default function ContactUsPage() {
                             name="pickupLocation"
                             value={formData.pickupLocation}
                             onChange={handleInputChange}
-                            className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-white placeholder-white/60 focus:outline-none appearance-none cursor-pointer"
+                            className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-white placeholder-white/60 focus:outline-none appearance-none cursor-pointer transition-smooth-fast focus:ring-2 focus:ring-white/60 focus:bg-white/15"
                           >
                             <option value="" disabled hidden>Select location</option>
                             <option value="dillibazar" className="text-gray-900">Dillibazar, Kathmandu</option>
                             <option value="new_baneshwor" className="text-gray-900">New Baneshwor, Kathmandu</option>
                           </select>
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/80 text-[10px]">▼</span>
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/80 w-3.5 h-3.5" />
                         </div>
                       </div>
                   </div>
@@ -109,7 +110,7 @@ export default function ContactUsPage() {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-[#FFA000] text-white text-xs font-bold py-3.5 rounded-xl hover:bg-amber-600 transition-colors shadow-sm mt-8 tracking-wide uppercase"
+                  className="w-full bg-[#FFA000] text-white text-xs font-bold py-3.5 rounded-xl hover:bg-amber-600 transition-smooth-fast hover:shadow-lg active:scale-95 shadow-sm mt-8 tracking-wide uppercase"
                 >
                   Book now
                 </button>
@@ -117,14 +118,14 @@ export default function ContactUsPage() {
             </div>
 
             {/* Banner Showcase Image Column */}
-            <div className="lg:col-span-8 bg-gray-100/80 rounded-[28px] overflow-hidden relative min-h-[340px] shadow-sm border border-gray-100">
-              <Image 
-                src="/rollsroyce.jpg" 
-                alt="Premium Car Showcase" 
-                fill 
+            <div className="lg:col-span-8 bg-gray-100/80 rounded-[28px] overflow-hidden relative min-h-[340px] shadow-sm border border-gray-100 animate-scale-in group">
+              <Image
+                src="/rollsroyce.jpg"
+                alt="Premium Car Showcase"
+                fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 66vw"
-                className="object-cover"
+                className="object-cover img-zoom-smooth"
               />
             </div>
 
@@ -136,8 +137,8 @@ export default function ContactUsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             
             {/* Address Item */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm font-bold text-lg">📍</div>
+            <div className="flex items-center gap-4 animate-fade-in-up">
+              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm"><MapPin className="w-5 h-5" strokeWidth={2.25} /></div>
               <div>
                 <h4 className="text-xs font-bold text-gray-400 tracking-wide">Address</h4>
                 <p className="text-[13px] font-extrabold text-gray-900 mt-0.5">Oxford Ave. Cary, NC 27511</p>
@@ -145,8 +146,8 @@ export default function ContactUsPage() {
             </div>
 
             {/* Email Item */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm font-bold text-lg">✉</div>
+            <div className="flex items-center gap-4 animate-fade-in-up stagger-1">
+              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm"><Mail className="w-5 h-5" strokeWidth={2.25} /></div>
               <div>
                 <h4 className="text-xs font-bold text-gray-400 tracking-wide">Email</h4>
                 <p className="text-[13px] font-extrabold text-gray-900 mt-0.5">nwiqer@yahoo.com</p>
@@ -154,8 +155,8 @@ export default function ContactUsPage() {
             </div>
 
             {/* Phone Item */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm font-bold text-lg">📞</div>
+            <div className="flex items-center gap-4 animate-fade-in-up stagger-2">
+              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm"><Phone className="w-5 h-5" strokeWidth={2.25} /></div>
               <div>
                 <h4 className="text-xs font-bold text-gray-400 tracking-wide">Phone</h4>
                 <p className="text-[13px] font-extrabold text-gray-900 mt-0.5">+537 547-6401</p>
@@ -163,8 +164,8 @@ export default function ContactUsPage() {
             </div>
 
             {/* Opening Hours Item */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm font-bold text-lg">🕒</div>
+            <div className="flex items-center gap-4 animate-fade-in-up stagger-3">
+              <div className="w-12 h-12 rounded-full bg-[#FFA000] text-white flex items-center justify-center shrink-0 shadow-sm"><Clock className="w-5 h-5" strokeWidth={2.25} /></div>
               <div>
                 <h4 className="text-xs font-bold text-gray-400 tracking-wide">Opening hours</h4>
                 <p className="text-[13px] font-extrabold text-gray-900 mt-0.5">Sun-Mon: 10am - 10pm</p>
@@ -178,7 +179,7 @@ export default function ContactUsPage() {
         <section className="max-w-7xl mx-auto px-4 mt-24">
           <div className="w-full bg-gray-50/60 rounded-[32px] py-6 px-10 flex flex-wrap items-center justify-around gap-6 border border-gray-100/50">
             {BRAND_LOGOS.map((logo, idx) => (
-              <div key={idx} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-200">
+              <div key={idx} className="relative h-7 w-16 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 hover:scale-110 transition-smooth-fast">
                 <Image 
                   src={logo.src} 
                   alt={logo.alt} 

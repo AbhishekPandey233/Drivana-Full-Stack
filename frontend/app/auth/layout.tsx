@@ -27,22 +27,24 @@ export default function AuthLayout({
 			/>
 			<div
 				aria-hidden="true"
-				className="pointer-events-none absolute left-0 bottom-0 hidden h-32 w-24 rounded-3xl bg-[linear-gradient(135deg,#a55df5,#c784f3)] shadow-[0_20px_35px_rgba(66,52,150,0.28)] md:block"
-				style={{ clipPath: "polygon(0 8%, 100% 0, 84% 100%, 0 94%)" }}
+				className="pointer-events-none absolute left-0 bottom-0 hidden h-32 w-24 rounded-3xl bg-[linear-gradient(135deg,#a55df5,#c784f3)] shadow-[0_20px_35px_rgba(66,52,150,0.28)] md:block animate-float"
+				style={{ clipPath: "polygon(0 8%, 100% 0, 84% 100%, 0 94%)", animationDelay: "1.5s" }}
 			/>
 			<div
 				aria-hidden="true"
-				className="pointer-events-none absolute right-8 top-4 hidden h-28 w-28 rounded-full bg-[linear-gradient(180deg,#9667f7,#d770ef)] shadow-[0_16px_25px_rgba(100,80,190,0.32)] md:block"
+				className="pointer-events-none absolute right-8 top-4 hidden h-28 w-28 rounded-full bg-[linear-gradient(180deg,#9667f7,#d770ef)] shadow-[0_16px_25px_rgba(100,80,190,0.32)] md:block animate-float"
+				style={{ animationDelay: "0.5s" }}
 			/>
 			<div
 				aria-hidden="true"
-				className="pointer-events-none absolute right-0 top-20 hidden h-24 w-24 rounded-full bg-[linear-gradient(180deg,#c968ef,#6d8ef7)] shadow-[0_16px_25px_rgba(100,80,190,0.32)] md:block"
+				className="pointer-events-none absolute right-0 top-20 hidden h-24 w-24 rounded-full bg-[linear-gradient(180deg,#c968ef,#6d8ef7)] shadow-[0_16px_25px_rgba(100,80,190,0.32)] md:block animate-float"
+				style={{ animationDelay: "2.5s" }}
 			/>
 
 			<div className="relative z-10 px-4 py-4 sm:px-6 lg:px-8">
 				<Link
 					href="/"
-					className="inline-flex items-center gap-2 rounded-sm border-2 border-sky-500 bg-white px-2.5 py-1.5 shadow-sm transition-transform duration-200 hover:-translate-y-0.5"
+					className="inline-flex items-center gap-2 rounded-sm border-2 border-sky-500 bg-white px-2.5 py-1.5 shadow-sm transition-smooth-fast hover:-translate-y-0.5 hover:shadow-md active:scale-95"
 				>
 					<span className="flex h-4 w-4 items-center justify-center rounded-[3px] border border-slate-900 text-[8px] font-black leading-none text-slate-900">
 						C
