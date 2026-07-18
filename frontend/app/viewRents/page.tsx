@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 import AuthGate from "../navigation/AuthGate";
 import Header from "../navigation/Header";
 import Footer from "../navigation/Footer";
@@ -243,30 +244,31 @@ export default function ViewRentsPage() {
             </p>
 
             {successMessage && (
-              <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl text-xs font-semibold">
-                ✓ {successMessage}
+              <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl text-xs font-semibold animate-fade-in-up flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" strokeWidth={2.25} /> {successMessage}
               </div>
             )}
 
             {loading && (
-              <div className="text-center py-24 text-sm font-medium text-slate-400">
-                Loading your rentals...
+              <div className="flex flex-col items-center justify-center gap-3 py-24">
+                <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+                <span className="text-sm font-medium text-slate-400">Loading your rentals...</span>
               </div>
             )}
 
             {error && !loading && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold">
-                ⚠ {error}
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold animate-shake flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" strokeWidth={2.25} /> {error}
               </div>
             )}
 
             {!loading && !error && rentals.length === 0 && (
-              <div className="text-center py-24 text-sm font-medium text-slate-400">
+              <div className="text-center py-24 text-sm font-medium text-slate-400 animate-fade-in-up">
                 You have no rental records yet.
                 <div className="mt-4">
                   <Link
                     href="/vehicles"
-                    className="inline-block px-6 py-3 bg-[#6366F1] text-white rounded-xl text-xs font-bold hover:bg-indigo-600 transition-colors"
+                    className="inline-block px-6 py-3 bg-[#6366F1] text-white rounded-xl text-xs font-bold transition-smooth-fast hover:bg-indigo-600 hover:shadow-md active:scale-95"
                   >
                     Browse Vehicles
                   </Link>
@@ -276,7 +278,7 @@ export default function ViewRentsPage() {
 
             {!loading && rentals.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rentals.map((rental) => {
+                {rentals.map((rental, idx) => {
                   const daysLeft = getDaysRemaining(rental.endDate);
                   const daysBadgeClass =
                     daysLeft === 0
@@ -290,10 +292,12 @@ export default function ViewRentsPage() {
                   return (
                     <div
                       key={rental._id}
-                      className="group bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
+                      className={`group card-hover-glow bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col animate-fade-in-up stagger-${(idx % 6) + 1}`}
                     >
                       <div className="w-full aspect-[16/10] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center relative overflow-hidden">
-                        {renderImage(rental.vehicle)}
+                        <div className="w-full h-full img-zoom-smooth">
+                          {renderImage(rental.vehicle)}
+                        </div>
                         <span className="absolute top-3 left-3 text-[10px] uppercase font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded-full tracking-wider">
                           {rental.vehicle.type}
                         </span>
@@ -355,12 +359,12 @@ export default function ViewRentsPage() {
                                   }))
                                 }
                                 placeholder="Days"
-                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-1.5"
+                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 outline-none transition-smooth-fast focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 mb-1.5"
                               />
                               <button
                                 onClick={() => handleExtend(rental._id)}
                                 disabled={extendingId === rental._id || getDaysRemaining(rental.endDate) === 0}
-                                className="w-full h-9 rounded-lg bg-[#6366F1] font-bold text-[11px] text-white shadow-sm hover:bg-indigo-600 transition-colors uppercase tracking-wider disabled:opacity-50"
+                                className="w-full h-9 rounded-lg bg-[#6366F1] font-bold text-[11px] text-white shadow-sm hover:bg-indigo-600 transition-smooth-fast active:scale-95 uppercase tracking-wider disabled:opacity-50 disabled:active:scale-100"
                               >
                                 {extendingId === rental._id ? "..." : "Extend"}
                               </button>
@@ -381,12 +385,12 @@ export default function ViewRentsPage() {
                                   }))
                                 }
                                 placeholder="Days"
-                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#6366F1] mb-1.5"
+                                className="w-full bg-[#FAFAFC] border border-slate-200 rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-800 outline-none transition-smooth-fast focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/30 mb-1.5"
                               />
                               <button
                                 onClick={() => handleDecrease(rental._id)}
                                 disabled={decreaseId === rental._id || getDaysRemaining(rental.endDate) === 0}
-                                className="w-full h-9 rounded-lg bg-slate-100 font-bold text-[11px] text-slate-600 shadow-sm hover:bg-slate-200 transition-colors uppercase tracking-wider disabled:opacity-50"
+                                className="w-full h-9 rounded-lg bg-slate-100 font-bold text-[11px] text-slate-600 shadow-sm hover:bg-slate-200 transition-smooth-fast active:scale-95 uppercase tracking-wider disabled:opacity-50 disabled:active:scale-100"
                               >
                                 {decreaseId === rental._id ? "..." : "Decrease"}
                               </button>
@@ -401,7 +405,7 @@ export default function ViewRentsPage() {
                             ) : (
                               <button
                                 onClick={() => router.push(`/payment?rentalId=${rental._id}`)}
-                                className="h-9 rounded-lg bg-emerald-500 font-bold text-[11px] text-white shadow-sm hover:bg-emerald-600 transition-colors uppercase tracking-wider"
+                                className="h-9 rounded-lg bg-emerald-500 font-bold text-[11px] text-white shadow-sm hover:bg-emerald-600 transition-smooth-fast active:scale-95 uppercase tracking-wider"
                               >
                                 Pay
                               </button>
@@ -410,7 +414,7 @@ export default function ViewRentsPage() {
                             <button
                               onClick={() => setCancelModalOpen(rental._id)}
                               disabled={getDaysRemaining(rental.endDate) === 0}
-                              className="h-9 rounded-lg bg-red-50 font-bold text-[11px] text-red-600 shadow-sm hover:bg-red-100 transition-colors uppercase tracking-wider disabled:opacity-50"
+                              className="h-9 rounded-lg bg-red-50 font-bold text-[11px] text-red-600 shadow-sm hover:bg-red-100 transition-smooth-fast active:scale-95 uppercase tracking-wider disabled:opacity-50 disabled:active:scale-100"
                             >
                               Cancel
                             </button>
@@ -429,11 +433,11 @@ export default function ViewRentsPage() {
 
       {cancelModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8 animate-fade-in"
           onClick={closeCancelModal}
         >
           <div
-            className="mt-24 w-full max-w-[480px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7"
+            className="mt-24 w-full max-w-[480px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7 animate-scale-in"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4 mb-5">
@@ -451,7 +455,7 @@ export default function ViewRentsPage() {
               <button
                 type="button"
                 onClick={closeCancelModal}
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-colors hover:bg-violet-50 hover:text-slate-700"
+                className="flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-lg leading-none text-slate-500 transition-smooth-fast hover:bg-violet-50 hover:text-slate-700 active:scale-90"
                 aria-label="Close cancellation modal"
               >
                 ×
