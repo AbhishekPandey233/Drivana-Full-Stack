@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, User, Users, Plus, Car, ClipboardList, ArrowLeftCircle } from "lucide-react";
+import { LayoutDashboard, User, Users, Plus, Car, ClipboardList } from "lucide-react";
 import AuthGate from "../navigation/AuthGate";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -69,23 +69,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
           </div>
 
-          <div>
-            {/* Back to App */}
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="group w-full flex items-center px-3 py-2.5 mb-4 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600 transition-smooth-fast hover:bg-slate-50 hover:text-[#6366F1] hover:border-indigo-200"
-            >
-              <ArrowLeftCircle className="mr-2.5 w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2.25} />
-              Back to App
-            </button>
-
-            {/* Brand Footer Symbol */}
-            <div className="px-2 flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                D
-              </div>
-              <span className="text-xs font-medium text-slate-400">v1.0.0</span>
+          {/* Brand Footer Symbol */}
+          <div className="px-2 flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+              D
             </div>
+            <span className="text-xs font-medium text-slate-400">v1.0.0</span>
           </div>
         </aside>
 

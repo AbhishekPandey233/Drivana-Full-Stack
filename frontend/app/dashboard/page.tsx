@@ -24,7 +24,10 @@ export default function Dashboard() {
 							Manage your bookings, view available vehicles, and monitor activity from a single place.
 						</p>
 						<div className="flex items-center justify-center gap-4 animate-fade-in-up stagger-2">
-							<Link href="/vehicles" className="bg-[#F59E0B] px-5 py-3 rounded-xl font-semibold text-gray-900 transition-smooth-fast hover:bg-amber-500 hover:scale-105 hover:shadow-lg active:scale-95">
+							<Link href="/dashboard/homepage" className="bg-[#F59E0B] px-5 py-3 rounded-xl font-semibold text-gray-900 transition-smooth-fast hover:bg-amber-500 hover:scale-105 hover:shadow-lg active:scale-95">
+								View Dashboard Home
+							</Link>
+							<Link href="/vehicles" className="border border-white/30 px-5 py-3 rounded-xl text-white transition-smooth-fast hover:bg-white/10 hover:scale-105 active:scale-95">
 								Browse Vehicles
 							</Link>
 						</div>

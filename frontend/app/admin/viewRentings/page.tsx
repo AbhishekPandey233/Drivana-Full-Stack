@@ -1,12 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
-import Pagination from "../../components/Pagination";
-
-const ROWS_PER_PAGE = 10;
 
 interface User {
   _id: string;
@@ -38,8 +34,6 @@ export default function AdminViewRentingsPage() {
   const auth = useAuth();
   const [rentals, setRentals] = useState<Renting[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
 
   const [cancelModal, setCancelModal] = useState<{ isOpen: boolean; rentalId: string | null; vehicleName: string }>({
     isOpen: false,
@@ -102,25 +96,6 @@ export default function AdminViewRentingsPage() {
     void load();
   }, [fetchRentals]);
 
-  const filteredRentals = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return rentals;
-    return rentals.filter((rental) =>
-      [rental.user.fullName, rental.user.email, rental.vehicle.name, rental.vehicle.type].some((field) =>
-        field?.toLowerCase().includes(query)
-      )
-    );
-  }, [rentals, searchQuery]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredRentals.length / ROWS_PER_PAGE));
-  const safePage = Math.min(page, totalPages);
-  const paginatedRentals = filteredRentals.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setPage(1);
-  };
-
   const openCancelConfirmation = (rentalId: string, vehicleName: string) => {
     setCancelModal({
       isOpen: true,
@@ -173,7 +148,7 @@ export default function AdminViewRentingsPage() {
   return (
     <div className="relative">
       <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
-        <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
+        <div className="flex items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Rental Transactions</h1>
             <p className="text-sm font-medium text-slate-400 mt-1">
@@ -182,16 +157,6 @@ export default function AdminViewRentingsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={2.25} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                placeholder="Search rentals..."
-                className="h-9 w-56 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-xs font-medium text-slate-700 outline-none transition-smooth-fast focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"
-              />
-            </div>
             <button
               onClick={fetchRentals}
               className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition-smooth-fast hover:bg-slate-50 hover:shadow-md active:scale-95"
@@ -218,7 +183,7 @@ export default function AdminViewRentingsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/70">
-                {paginatedRentals.map((rental, idx) => (
+                {rentals.map((rental, idx) => (
                   <tr key={rental._id} className={`group hover:bg-slate-50/50 transition-colors animate-fade-in-up stagger-${Math.min(idx + 1, 6)}`}>
                     <td className="py-4 pl-4 flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-slate-100 font-bold text-slate-600 text-sm flex items-center justify-center uppercase shadow-inner shrink-0">
@@ -270,12 +235,11 @@ export default function AdminViewRentingsPage() {
                 ))}
               </tbody>
             </table>
-            {filteredRentals.length === 0 && (
+            {rentals.length === 0 && (
               <div className="text-center py-12 text-sm font-medium text-slate-400">
-                {rentals.length === 0 ? "No rental transactions found in the database." : "No rentals match your search."}
+                No rental transactions found in the database.
               </div>
             )}
-            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
           </div>
         )}
       </div>

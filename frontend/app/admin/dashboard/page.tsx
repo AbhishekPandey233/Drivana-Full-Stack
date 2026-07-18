@@ -103,10 +103,7 @@ export default function DashboardPage() {
           <span className="text-xs font-medium text-slate-400 block mt-2">All registered users</span>
         </div>
 
-        <div
-          onClick={() => router.push("/admin/viewRentings")}
-          className="card-hover-glow bg-gradient-to-br from-slate-50 to-purple-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer animate-fade-in-up stagger-1"
-        >
+        <div className="bg-gradient-to-br from-slate-50 to-purple-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden animate-fade-in-up stagger-1">
           <div className="absolute top-0 left-0 w-1 h-full bg-purple-500" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Rentals</span>
           <span className="text-4xl font-black text-slate-900 block mt-2 tracking-tight">
@@ -115,10 +112,7 @@ export default function DashboardPage() {
           <span className="text-xs font-medium text-slate-400 block mt-2">All rentals in the system</span>
         </div>
 
-        <div
-          onClick={() => router.push("/admin/viewRentings")}
-          className="card-hover-glow bg-gradient-to-br from-slate-50 to-emerald-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer animate-fade-in-up stagger-2"
-        >
+        <div className="bg-gradient-to-br from-slate-50 to-emerald-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden animate-fade-in-up stagger-2">
           <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Earnings</span>
           <span className="text-4xl font-black text-[#6366F1] block mt-2 tracking-tight">

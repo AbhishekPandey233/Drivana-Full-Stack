@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
 
 interface AdminUser {
@@ -18,7 +17,6 @@ export default function AdminProfilePage() {
   const auth = useAuth();
 
   const loading = auth.status !== "ready";
-  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const admin = useMemo<AdminUser | null>(() => {
     if (!auth.user || auth.role !== "admin") {
@@ -161,7 +159,7 @@ export default function AdminProfilePage() {
           
           <button
             type="button"
-            onClick={() => setLogoutModalOpen(true)}
+            onClick={handleLogout}
             className="inline-flex h-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-100 px-5 text-xs font-bold text-rose-600 shadow-sm transition-smooth-fast hover:bg-rose-100 active:scale-95"
           >
             Logout Session
@@ -178,46 +176,6 @@ export default function AdminProfilePage() {
         </div>
 
       </div>
-
-      {logoutModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
-          onClick={() => setLogoutModalOpen(false)}
-        >
-          <div
-            className="bg-white max-w-md w-full border border-slate-100 rounded-[24px] p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] animate-scale-in"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-rose-50 text-rose-600">
-              <AlertTriangle className="w-6 h-6" strokeWidth={2} />
-            </div>
-
-            <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">
-              Log out of admin session?
-            </h3>
-            <p className="text-sm font-medium text-slate-400 mt-2 leading-relaxed">
-              You will need to sign in again to access the admin dashboard.
-            </p>
-
-            <div className="flex items-center justify-end gap-3 mt-6">
-              <button
-                type="button"
-                onClick={() => setLogoutModalOpen(false)}
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-rose-600 px-4 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-rose-700 hover:shadow-md active:scale-95"
-              >
-                Confirm Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
