@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
 
 interface DashboardStats {
@@ -82,7 +83,7 @@ export default function DashboardPage() {
         </div>
         <button
           onClick={fetchStats}
-          className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-95"
+          className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition-smooth-fast hover:bg-slate-50 hover:shadow-md active:scale-95"
         >
           Refresh
         </button>
@@ -92,7 +93,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div
           onClick={() => router.push("/admin/users")}
-          className="bg-gradient-to-br from-slate-50 to-indigo-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer"
+          className="card-hover-glow bg-gradient-to-br from-slate-50 to-indigo-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer animate-fade-in-up"
         >
           <div className="absolute top-0 left-0 w-1 h-full bg-[#6366F1]" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Users</span>
@@ -102,7 +103,10 @@ export default function DashboardPage() {
           <span className="text-xs font-medium text-slate-400 block mt-2">All registered users</span>
         </div>
 
-        <div className="bg-gradient-to-br from-slate-50 to-purple-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+        <div
+          onClick={() => router.push("/admin/viewRentings")}
+          className="card-hover-glow bg-gradient-to-br from-slate-50 to-purple-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer animate-fade-in-up stagger-1"
+        >
           <div className="absolute top-0 left-0 w-1 h-full bg-purple-500" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Rentals</span>
           <span className="text-4xl font-black text-slate-900 block mt-2 tracking-tight">
@@ -111,7 +115,10 @@ export default function DashboardPage() {
           <span className="text-xs font-medium text-slate-400 block mt-2">All rentals in the system</span>
         </div>
 
-        <div className="bg-gradient-to-br from-slate-50 to-emerald-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+        <div
+          onClick={() => router.push("/admin/viewRentings")}
+          className="card-hover-glow bg-gradient-to-br from-slate-50 to-emerald-50/20 border border-slate-100 p-6 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer animate-fade-in-up stagger-2"
+        >
           <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Earnings</span>
           <span className="text-4xl font-black text-[#6366F1] block mt-2 tracking-tight">
@@ -127,24 +134,24 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div
             onClick={() => router.push("/admin/users")}
-            className="group border border-slate-100 bg-slate-50/60 p-5 rounded-2xl transition-all hover:bg-white hover:border-slate-200 hover:shadow-sm cursor-pointer flex items-center justify-between"
+            className="group border border-slate-100 bg-slate-50/60 p-5 rounded-2xl transition-smooth-fast hover:bg-white hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer flex items-center justify-between"
           >
             <div>
               <h3 className="font-bold text-slate-900 text-sm group-hover:text-[#6366F1] transition-colors">User Management</h3>
               <p className="text-xs text-slate-400 font-medium mt-1">View and manage all users</p>
             </div>
-            <span className="text-slate-300 group-hover:text-[#6366F1] transition-colors text-sm font-bold">➔</span>
+            <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#6366F1] group-hover:translate-x-1 transition-smooth-fast" strokeWidth={2.25} />
           </div>
 
           <div
             onClick={() => router.push("/admin/viewRentings")}
-            className="group border border-slate-100 bg-slate-50/60 p-5 rounded-2xl transition-all hover:bg-white hover:border-slate-200 hover:shadow-sm cursor-pointer flex items-center justify-between"
+            className="group border border-slate-100 bg-slate-50/60 p-5 rounded-2xl transition-smooth-fast hover:bg-white hover:border-slate-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer flex items-center justify-between"
           >
             <div>
               <h3 className="font-bold text-slate-900 text-sm group-hover:text-[#6366F1] transition-colors">Rental Management</h3>
               <p className="text-xs text-slate-400 font-medium mt-1">View and manage all rentals</p>
             </div>
-            <span className="text-slate-300 group-hover:text-[#6366F1] transition-colors text-sm font-bold">➔</span>
+            <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#6366F1] group-hover:translate-x-1 transition-smooth-fast" strokeWidth={2.25} />
           </div>
         </div>
       </div>

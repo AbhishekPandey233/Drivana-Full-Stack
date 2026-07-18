@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Car, Search } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
+import Pagination from "../../components/Pagination";
+
+const ROWS_PER_PAGE = 10;
 
 interface Vehicle {
   _id: string;
@@ -21,7 +25,9 @@ export default function VehiclesPage() {
   const auth = useAuth();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+
   // Custom Confirmation Modal State
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; vehicleId: string | null; vehicleName: string }>({
     isOpen: false,
@@ -74,6 +80,23 @@ export default function VehiclesPage() {
     };
     void load();
   }, [fetchVehicles]);
+
+  const filteredVehicles = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return vehicles;
+    return vehicles.filter((vehicle) =>
+      [vehicle.name, vehicle.type, vehicle.plateNumber, vehicle.status].some((field) => field?.toLowerCase().includes(query))
+    );
+  }, [vehicles, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredVehicles.length / ROWS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginatedVehicles = filteredVehicles.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
+  };
 
   const openDeleteConfirmation = (id: string, name: string) => {
     setDeleteModal({
@@ -140,18 +163,28 @@ export default function VehiclesPage() {
   return (
     <div className="relative">
       <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
-        <div className="flex items-start justify-between gap-4 mb-8">
+        <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Drivana Fleet </h1>
             <p className="text-sm font-medium text-slate-400 mt-1">
               Tracking <span className="text-slate-800 font-bold">{vehicles.length}</span> active operational vehicles
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <button 
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={2.25} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search vehicles..."
+                className="h-9 w-56 rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-xs font-medium text-slate-700 outline-none transition-smooth-fast focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20"
+              />
+            </div>
+            <button
               onClick={fetchVehicles}
-              className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50"
+              className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 shadow-sm transition-smooth-fast hover:bg-slate-50 hover:shadow-md active:scale-95"
             >
               Refresh Status
             </button>
@@ -159,8 +192,9 @@ export default function VehiclesPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-sm font-medium text-slate-400">
-            Fetching active fleet records from database...
+          <div className="flex flex-col items-center justify-center gap-3 py-12">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+            <span className="text-sm font-medium text-slate-400">Fetching active fleet records from database...</span>
           </div>
         ) : (
           <div className="w-full overflow-x-auto">
@@ -174,11 +208,11 @@ export default function VehiclesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/70">
-                {vehicles.map((vehicle) => (
-                  <tr key={vehicle._id} className="group hover:bg-slate-50/50 transition-colors">
+                {paginatedVehicles.map((vehicle, idx) => (
+                  <tr key={vehicle._id} className={`group hover:bg-slate-50/50 transition-colors animate-fade-in-up stagger-${Math.min(idx + 1, 6)}`}>
                     {/* Vehicle Details */}
                     <td className="py-4 pl-4 flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
                         {vehicle.image ? (
                           <img
                             src={vehicle.image.startsWith("http") ? vehicle.image : `http://localhost:5000${vehicle.image}`}
@@ -186,7 +220,7 @@ export default function VehiclesPage() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span className="text-lg">🚗</span>
+                          <Car className="w-4 h-4 text-slate-400" strokeWidth={2.25} />
                         )}
                       </div>
                       <div className="flex flex-col min-w-0">
@@ -216,13 +250,13 @@ export default function VehiclesPage() {
                       <div className="inline-flex items-center gap-2">
                         <button
                           onClick={() => router.push(`/admin/vehicles/edit/${vehicle._id}`)}
-                          className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                          className="text-xs font-bold bg-indigo-50 text-[#6366F1] hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-smooth-fast active:scale-95"
                         >
                           Edit
                         </button>
                         <button 
                           onClick={() => openDeleteConfirmation(vehicle._id, vehicle.name)}
-                          className="text-xs font-bold bg-rose-50 text-rose-600 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
+                          className="text-xs font-bold bg-rose-50 text-rose-600 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-smooth-fast active:scale-95"
                         >
                           Delete
                         </button>
@@ -232,11 +266,12 @@ export default function VehiclesPage() {
                 ))}
               </tbody>
             </table>
-            {vehicles.length === 0 && (
+            {filteredVehicles.length === 0 && (
               <div className="text-center py-12 text-sm font-medium text-slate-400">
-                No fleet vehicles registered in the database.
+                {vehicles.length === 0 ? "No fleet vehicles registered in the database." : "No vehicles match your search."}
               </div>
             )}
+            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
           </div>
         )}
       </div>
@@ -244,7 +279,7 @@ export default function VehiclesPage() {
       {/* Styled Theme-Matching Modal Backed Overdrop Overlay */}
       {deleteModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white max-w-md w-full border border-slate-100 rounded-[24px] p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] transform scale-100 transition-all">
+          <div className="bg-white max-w-md w-full border border-slate-100 rounded-[24px] p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] animate-scale-in">
             <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-rose-50 text-rose-600">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -262,14 +297,14 @@ export default function VehiclesPage() {
               <button
                 type="button"
                 onClick={closeDeleteModal}
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={confirmAndExecuteDelete}
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-rose-600 px-4 text-xs font-bold text-white shadow-sm transition-all hover:bg-rose-700"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-rose-600 px-4 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-rose-700 hover:shadow-md active:scale-95"
               >
                 Confirm Delete
               </button>

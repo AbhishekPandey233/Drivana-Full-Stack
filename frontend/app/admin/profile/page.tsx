@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AlertTriangle } from "lucide-react";
 import { useAuth } from "@/app/auth/AuthProvider";
 
 interface AdminUser {
@@ -17,6 +18,7 @@ export default function AdminProfilePage() {
   const auth = useAuth();
 
   const loading = auth.status !== "ready";
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const admin = useMemo<AdminUser | null>(() => {
     if (!auth.user || auth.role !== "admin") {
@@ -54,8 +56,9 @@ export default function AdminProfilePage() {
 
   if (loading) {
     return (
-      <div className="text-center py-12 text-sm font-medium text-slate-400">
-        Resolving administrative session records...
+      <div className="flex flex-col items-center justify-center gap-3 py-12">
+        <div className="w-8 h-8 border-2 border-slate-200 border-t-[#6366F1] rounded-full animate-spin" />
+        <span className="text-sm font-medium text-slate-400">Resolving administrative session records...</span>
       </div>
     );
   }
@@ -72,12 +75,12 @@ export default function AdminProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
-        
+      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)] animate-fade-in-up">
+
         {/* Header Block Section */}
         <div className="flex flex-col items-center border-b border-slate-100 pb-8 md:flex-row md:items-center md:justify-between gap-5">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-4xl font-black text-white shadow-md">
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-4xl font-black text-white shadow-md transition-transform duration-300 hover:scale-105">
               {initialLetter}
             </div>
 
@@ -151,15 +154,15 @@ export default function AdminProfilePage() {
           <button
             type="button"
             onClick={() => router.push("/admin/dashboard")}
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+            className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
           >
             Back to Dashboard
           </button>
           
           <button
             type="button"
-            onClick={handleLogout}
-            className="inline-flex h-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-100 px-5 text-xs font-bold text-rose-600 shadow-sm transition-all hover:bg-rose-100"
+            onClick={() => setLogoutModalOpen(true)}
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-rose-50 border border-rose-100 px-5 text-xs font-bold text-rose-600 shadow-sm transition-smooth-fast hover:bg-rose-100 active:scale-95"
           >
             Logout Session
           </button>
@@ -168,13 +171,53 @@ export default function AdminProfilePage() {
           <button
             type="button"
             onClick={() => router.push(`/admin/users/edit?id=${admin._id}`)}
-            className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-600"
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-indigo-600 hover:shadow-md active:scale-95"
           >
             Edit Profile
           </button>
         </div>
 
       </div>
+
+      {logoutModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
+          onClick={() => setLogoutModalOpen(false)}
+        >
+          <div
+            className="bg-white max-w-md w-full border border-slate-100 rounded-[24px] p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] animate-scale-in"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-xl bg-rose-50 text-rose-600">
+              <AlertTriangle className="w-6 h-6" strokeWidth={2} />
+            </div>
+
+            <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">
+              Log out of admin session?
+            </h3>
+            <p className="text-sm font-medium text-slate-400 mt-2 leading-relaxed">
+              You will need to sign in again to access the admin dashboard.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => setLogoutModalOpen(false)}
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-rose-600 px-4 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-rose-700 hover:shadow-md active:scale-95"
+              >
+                Confirm Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

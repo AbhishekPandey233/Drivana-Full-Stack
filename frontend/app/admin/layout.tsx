@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, User, Users, Plus, Car, ClipboardList, ArrowLeftCircle } from "lucide-react";
 import AuthGate from "../navigation/AuthGate";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -11,13 +12,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Defined routes matching your exact folder structures
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: "📊" },
-    { name: "Profile", path: "/admin/profile", icon: "👤" },
-    { name: "Users", path: "/admin/users", icon: "👥" },
-    { name: "Create User", path: "/admin/id/edit", icon: "➕" },
-    { name: "Vehicles", path: "/admin/vehicles", icon: "🚗" },
-    { name: "Create Vehicle", path: "/admin/vehicles/create", icon: "➕" },
-    { name: "View Rentings", path: "/admin/viewRentings", icon: "📋" },
+    { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Profile", path: "/admin/profile", icon: User },
+    { name: "Users", path: "/admin/users", icon: Users },
+    { name: "Create User", path: "/admin/id/edit", icon: Plus },
+    { name: "Vehicles", path: "/admin/vehicles", icon: Car },
+    { name: "Create Vehicle", path: "/admin/vehicles/create", icon: Plus },
+    { name: "View Rentings", path: "/admin/viewRentings", icon: ClipboardList },
   ];
 
   return (
@@ -54,13 +55,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <button
                     key={item.name}
                     onClick={() => router.push(item.path)}
-                    className={`w-full flex items-center px-3 py-2.5 text-sm font-semibold rounded-xl transition-all ${
+                    className={`group w-full flex items-center px-3 py-2.5 text-sm font-semibold rounded-xl transition-smooth-fast ${
                       isActive
-                        ? "bg-indigo-50 text-[#6366F1]"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                        ? "bg-indigo-50 text-[#6366F1] shadow-[inset_3px_0_0_0_#6366F1]"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-0.5"
                     }`}
                   >
-                    <span className="mr-2.5">{item.icon}</span>
+                    <item.icon className="mr-2.5 w-4 h-4 transition-transform duration-200 group-hover:scale-110" strokeWidth={2.25} />
                     {item.name}
                   </button>
                 );
@@ -68,17 +69,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
           </div>
 
-          {/* Brand Footer Symbol */}
-          <div className="px-2 flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-              D
+          <div>
+            {/* Back to App */}
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="group w-full flex items-center px-3 py-2.5 mb-4 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600 transition-smooth-fast hover:bg-slate-50 hover:text-[#6366F1] hover:border-indigo-200"
+            >
+              <ArrowLeftCircle className="mr-2.5 w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={2.25} />
+              Back to App
+            </button>
+
+            {/* Brand Footer Symbol */}
+            <div className="px-2 flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                D
+              </div>
+              <span className="text-xs font-medium text-slate-400">v1.0.0</span>
             </div>
-            <span className="text-xs font-medium text-slate-400">v1.0.0</span>
           </div>
         </aside>
 
         {/* CHANGING PAGE CONTENT */}
-        <main className="flex-1 p-8 lg:p-12 max-w-7xl overflow-y-auto">
+        <main key={pathname} className="flex-1 p-8 lg:p-12 max-w-7xl overflow-y-auto animate-fade-in">
           {children}
         </main>
 
