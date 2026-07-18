@@ -3,6 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 import Header from "../navigation/Header";
 import Footer from "../navigation/Footer";
 import AuthGate from "../navigation/AuthGate";
@@ -149,17 +150,18 @@ function PaymentContent() {
 
         <div className="max-w-6xl mx-auto px-4 py-16">
           {loading ? (
-            <div className="text-center py-24 text-sm font-medium text-slate-400">
-              Loading rental details...
+            <div className="flex flex-col items-center justify-center gap-3 py-24">
+              <div className="w-8 h-8 border-2 border-slate-200 border-t-[#9254FF] rounded-full animate-spin" />
+              <span className="text-sm font-medium text-slate-400">Loading rental details...</span>
             </div>
           ) : error && !renting ? (
-            <div className="max-w-md mx-auto text-center py-24">
-              <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold">
-                ⚠ {error}
+            <div className="max-w-md mx-auto text-center py-24 animate-fade-in-up">
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold animate-shake flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" strokeWidth={2.25} /> {error}
               </div>
               <Link
                 href="/viewRents"
-                className="inline-block px-6 py-3 bg-[#9254FF] text-white rounded-xl text-xs font-bold hover:bg-[#7D3CFF] transition-colors"
+                className="inline-block px-6 py-3 bg-[#9254FF] text-white rounded-xl text-xs font-bold transition-smooth-fast hover:bg-[#7D3CFF] hover:shadow-md active:scale-95"
               >
                 Back to My Rentals
               </Link>
@@ -167,7 +169,7 @@ function PaymentContent() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               {/* Left Side: Form Fields */}
-              <div className="lg:col-span-7 space-y-6">
+              <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
                 <div>
                   <h1 className="text-3xl font-bold tracking-tight text-black mb-4">
                     Let&#39;s Make Payment
@@ -179,8 +181,8 @@ function PaymentContent() {
                 </div>
 
                 {error && (
-                  <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold">
-                    ⚠ {error}
+                  <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold animate-shake flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" strokeWidth={2.25} /> {error}
                   </div>
                 )}
 
@@ -196,7 +198,7 @@ function PaymentContent() {
                       value={cardholderName}
                       onChange={(e) => setCardholderName(e.target.value)}
                       placeholder="John Doe"
-                      className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 outline-none transition-smooth-fast focus:ring-2 focus:ring-violet-400"
                     />
                   </div>
 
@@ -218,7 +220,7 @@ function PaymentContent() {
                         value={cardNumber}
                         onChange={(e) => setCardNumber(e.target.value)}
                         placeholder="1234 5678 9010 1112"
-                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl pl-14 pr-4 py-3 text-sm font-medium text-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl pl-14 pr-4 py-3 text-sm font-medium text-violet-500 outline-none transition-smooth-fast focus:ring-2 focus:ring-violet-400"
                       />
                     </div>
                   </div>
@@ -235,7 +237,7 @@ function PaymentContent() {
                         value={expiry}
                         onChange={(e) => setExpiry(e.target.value)}
                         placeholder="MM / YY"
-                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 outline-none transition-smooth-fast focus:ring-2 focus:ring-violet-400"
                       />
                     </div>
 
@@ -249,7 +251,7 @@ function PaymentContent() {
                         value={cvc}
                         onChange={(e) => setCvc(e.target.value)}
                         placeholder="123"
-                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl px-4 py-3 text-sm font-medium text-violet-500 outline-none transition-smooth-fast focus:ring-2 focus:ring-violet-400"
                       />
                     </div>
                   </div>
@@ -265,7 +267,7 @@ function PaymentContent() {
                         value={discountCode}
                         onChange={(e) => setDiscountCode(e.target.value)}
                         placeholder="Optional"
-                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl pl-4 pr-16 py-3 text-sm font-medium text-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                        className="w-full bg-[#EFEFEF]/70 border-0 rounded-xl pl-4 pr-16 py-3 text-sm font-medium text-violet-300 outline-none transition-smooth-fast focus:ring-2 focus:ring-violet-400"
                       />
                     </div>
                   </div>
@@ -275,13 +277,13 @@ function PaymentContent() {
                     <button
                       type="submit"
                       disabled={processing}
-                      className="w-40 h-11 rounded-lg bg-[#9254FF] hover:bg-[#7D3CFF] font-bold text-sm text-white shadow-sm transition-colors text-center disabled:opacity-50"
+                      className="w-40 h-11 rounded-lg bg-[#9254FF] hover:bg-[#7D3CFF] font-bold text-sm text-white shadow-sm transition-smooth-fast hover:shadow-lg active:scale-95 text-center disabled:opacity-50 disabled:active:scale-100"
                     >
                       {processing ? "Processing..." : "Pay"}
                     </button>
                     <Link
                       href="/viewRents"
-                      className="w-40 h-11 rounded-lg bg-[#9254FF] hover:bg-[#7D3CFF] font-bold text-sm text-white shadow-sm transition-colors flex items-center justify-center"
+                      className="w-40 h-11 rounded-lg bg-[#9254FF] hover:bg-[#7D3CFF] font-bold text-sm text-white shadow-sm transition-smooth-fast hover:shadow-lg active:scale-95 flex items-center justify-center"
                     >
                       Cancel
                     </Link>
@@ -290,7 +292,7 @@ function PaymentContent() {
               </div>
 
               {/* Right Side: Pricing Breakdown Card ($USD) */}
-              <div className="lg:col-span-5 bg-[#F2F2F2]/80 rounded-xl p-8 space-y-6">
+              <div className="lg:col-span-5 bg-[#F2F2F2]/80 rounded-xl p-8 space-y-6 animate-fade-in-up stagger-1">
                 <div>
                   <p className="text-gray-500 text-sm font-medium">You&#39;re paying,</p>
                   <h2 className="text-5xl font-bold tracking-tight text-black mt-2">
@@ -349,8 +351,9 @@ export default function PaymentPage() {
     <AuthGate allowedRoles={["user", "admin"]}>
       <Suspense
         fallback={
-          <div className="text-center py-24 text-sm font-medium text-slate-400">
-            Loading payment details...
+          <div className="flex flex-col items-center justify-center gap-3 py-24">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-[#9254FF] rounded-full animate-spin" />
+            <span className="text-sm font-medium text-slate-400">Loading payment details...</span>
           </div>
         }
       >
