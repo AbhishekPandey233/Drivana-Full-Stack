@@ -115,7 +115,7 @@ export default function CreateVehiclePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)]">
+      <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 lg:p-8 shadow-[0_12px_40px_rgba(15,23,42,0.04)] animate-fade-in-up">
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Register Fleet Vehicle</h1>
           <p className="text-sm font-medium text-slate-400 mt-1">
@@ -124,12 +124,12 @@ export default function CreateVehiclePage() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold">
+          <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold animate-shake">
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold">
+          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs font-bold animate-fade-in-up">
             {success}
           </div>
         )}
@@ -238,7 +238,7 @@ export default function CreateVehiclePage() {
             <h3 className="text-sm font-bold text-slate-800 border-b pb-2 pt-4">Addons & Equipment</h3>
             <div className="grid grid-cols-2 gap-3 pt-2">
               {(["hasABS", "hasAirBags", "hasCruiseControl", "hasAirConditioner"] as const).map((feature) => (
-                <label key={feature} className="flex items-center gap-3 text-sm font-medium text-slate-700 border border-slate-200 p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
+                <label key={feature} className={`flex items-center gap-3 text-sm font-medium text-slate-700 border p-3 rounded-xl cursor-pointer transition-smooth-fast hover:bg-slate-50 hover:-translate-y-0.5 ${formData[feature] ? 'border-indigo-200 bg-indigo-50/40' : 'border-slate-200'}`}>
                   <input type="checkbox" name={feature} checked={!!formData[feature]} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                   <span className="capitalize text-xs font-bold uppercase tracking-wider">{feature.replace("has", "Include ")}</span>
                 </label>
@@ -250,7 +250,7 @@ export default function CreateVehiclePage() {
               <div className="flex items-start gap-4">
                 <div className="w-24 h-24 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
                   {imagePreview ? (
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover animate-scale-in" />
                   ) : (
                     <span className="text-xs text-slate-400 font-medium text-center px-2">No image selected</span>
                   )}
@@ -272,14 +272,14 @@ export default function CreateVehiclePage() {
               <button
                 type="button"
                 onClick={() => router.push("/admin/vehicles")}
-                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-600 shadow-sm transition-smooth-fast hover:bg-slate-50 active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-600 disabled:opacity-50"
+                className="inline-flex h-11 items-center justify-center rounded-xl bg-[#6366F1] px-5 text-xs font-bold text-white shadow-sm transition-smooth-fast hover:bg-indigo-600 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:active:scale-100"
               >
                 {submitting ? "Adding to Fleet..." : "Register Asset"}
               </button>
