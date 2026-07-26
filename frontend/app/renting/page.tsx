@@ -279,10 +279,7 @@ function RentingContent() {
       </main>
 
       {successOpen && vehicle && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8 animate-fade-in"
-          onClick={closeSuccessPopup}
-        >
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 backdrop-blur-sm px-4 py-8 animate-fade-in">
           <div
             className="mt-24 w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.15)] ring-1 ring-slate-200/70 sm:p-7 animate-scale-in"
             onClick={(event) => event.stopPropagation()}

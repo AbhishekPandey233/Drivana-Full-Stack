@@ -3,6 +3,27 @@ import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import Renting from "../models/Renting";
 import Vehicle from "../models/Vehicle";
 
+// Marks past-due active rentals as completed and frees up their vehicles.
+// Called wherever vehicle/rental status is read, since nothing else flips
+// a vehicle back to "available" once its rental period naturally ends.
+export const releaseExpiredRentings = async (): Promise<void> => {
+  const expired = await Renting.find({
+    status: { $in: ["pending", "confirmed"] },
+    endDate: { $lt: new Date() },
+  });
+
+  if (expired.length === 0) return;
+
+  await Renting.updateMany(
+    { _id: { $in: expired.map((r) => r._id) } },
+    { $set: { status: "completed" } }
+  );
+  await Vehicle.updateMany(
+    { _id: { $in: expired.map((r) => r.vehicle.toString()) }, status: "rented" },
+    { $set: { status: "available" } }
+  );
+};
+
 // @desc    Create a new car rental record
 // @route   POST /api/rentings
 export const createRenting = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
@@ -19,6 +40,7 @@ export const createRenting = async (req: AuthenticatedRequest, res: Response): P
     }
 
     // Verify vehicle availability
+    await releaseExpiredRentings();
     const vehicle = await Vehicle.findById(vehicleId);
     if (!vehicle || vehicle.status !== "available") {
       return res.status(400).json({ error: "Vehicle is no longer available for renting." });
@@ -57,6 +79,7 @@ export const getMyRentings = async (req: AuthenticatedRequest, res: Response): P
     }
 
     // Query exclusively by the specific user ID and populate vehicle parameters
+    await releaseExpiredRentings();
     const myRentings = await Renting.find().where("user").equals(userId)
       .populate("vehicle")
       .sort({ createdAt: -1 });
@@ -242,6 +265,7 @@ export const payRental = async (req: AuthenticatedRequest, res: Response): Promi
 // @route   GET /api/rentings/admin/all
 export const getAllRentings = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
   try {
+    await releaseExpiredRentings();
     const allRentings = await Renting.find()
       .populate("user", "fullName email")
       .populate("vehicle", "name type pricePerDay")

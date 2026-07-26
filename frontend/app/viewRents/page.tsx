@@ -47,6 +47,7 @@ export default function ViewRentsPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [cancelModalOpen, setCancelModalOpen] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [dismissedExpired, setDismissedExpired] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchRentals = async () => {
@@ -288,6 +289,28 @@ export default function ViewRentsPage() {
                       : daysLeft <= 7
                       ? "bg-amber-50 text-amber-600"
                       : "bg-emerald-50 text-emerald-600";
+
+                  if (daysLeft === 0) {
+                    if (dismissedExpired.includes(rental._id)) return null;
+                    return (
+                      <div
+                        key={rental._id}
+                        className={`bg-amber-50 border border-amber-100 rounded-2xl p-5 text-sm text-amber-700 font-medium animate-fade-in-up stagger-${(idx % 6) + 1}`}
+                      >
+                        <p className="font-bold text-amber-800 mb-1">{rental.vehicle.name}</p>
+                        The renting period is over. Please return the car at the designated
+                        location or contact customer support for a pickup location.
+                        <div className="mt-3">
+                          <button
+                            onClick={() => setDismissedExpired((prev) => [...prev, rental._id])}
+                            className="px-4 py-2 rounded-lg bg-amber-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-amber-600 transition-smooth-fast active:scale-95"
+                          >
+                            OK
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div

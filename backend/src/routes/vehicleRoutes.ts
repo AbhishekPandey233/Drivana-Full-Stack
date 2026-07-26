@@ -9,6 +9,7 @@ import {
 } from "../controllers/vehicleController";
 import Vehicle from "../models/Vehicle";
 import { requireAdmin } from "../middleware/adminMiddleware";
+import { releaseExpiredRentings } from "../controllers/rentingController";
 
 const router = Router();
 
@@ -43,8 +44,24 @@ const persistImageUrl = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+// multer leaves multipart text fields as raw strings, but specs/equipment
+// are nested objects sent as JSON strings — parse them back before saving.
+const parseJsonFields = (req: Request, res: Response, next: NextFunction) => {
+  for (const field of ["specs", "equipment"]) {
+    if (typeof req.body[field] === "string") {
+      try {
+        req.body[field] = JSON.parse(req.body[field]);
+      } catch {
+        // leave as-is; schema validation will reject it
+      }
+    }
+  }
+  next();
+};
+
 router.get("/", async (req, res) => {
   try {
+    await releaseExpiredRentings();
     const vehicles = await Vehicle.find().sort({ createdAt: -1 });
     res.status(200).json(vehicles);
   } catch (error) {
@@ -52,7 +69,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", requireAdmin, upload.single("image"), async (req, res) => {
+router.post("/", requireAdmin, upload.single("image"), parseJsonFields, async (req, res) => {
   try {
     const vehicleData: any = { ...req.body };
     if (req.file) {
@@ -74,6 +91,7 @@ router.put(
   requireAdmin,
   upload.single("image"),
   persistImageUrl,
+  parseJsonFields,
   async (req, res) => {
     await updateVehicle(req, res);
   }

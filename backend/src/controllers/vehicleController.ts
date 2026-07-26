@@ -1,12 +1,14 @@
 // File path: C:\Users\ACER\OneDrive\Desktop\drivana_full_stack\backend\src\controllers\vehicleController.ts
 import { Request, Response } from "express";
 import Vehicle from "../models/Vehicle";
+import { releaseExpiredRentings } from "./rentingController";
 
 // @desc    Get a single vehicle by ID
 // @route   GET /api/vehicles/:id
 export const getVehicleById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    await releaseExpiredRentings();
     const vehicle = await Vehicle.findById(id);
 
     if (!vehicle) {
